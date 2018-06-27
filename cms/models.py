@@ -58,12 +58,12 @@ class EventType(models.Model):
         verbose_name_plural = "赛事类型"
 
     def __str__(self):
-        return ','.join(['类型:' + str(self.type), '资格线:' + str(self.lines), '项目价格:' + str(self.price)])
+        return self.type
+        # return ','.join(['类型:' + str(self.type), '资格线:' + str(self.lines), '项目价格:' + str(self.price)])
 
     type = models.CharField(verbose_name="类型", max_length=50)
-    lines = models.CharField(verbose_name='资格线', max_length=50)
-    price = models.CharField(verbose_name='项目价格', max_length=50)
-    
+
+
 
 class Events(models.Model):
 
@@ -71,6 +71,9 @@ class Events(models.Model):
         verbose_name = "赛事"
         verbose_name_plural = "赛事"
         ordering = ['evnet_weight','-event_date']
+
+    def get_type(self):
+        return self.eventtypedetail_set.all()
 
     evnet_weight_choices = (
         (0, '一级置顶'),
@@ -92,6 +95,18 @@ class Events(models.Model):
     event_project = models.ForeignKey(EventProject, on_delete=models.SET(-1), verbose_name='赛事项目')
 
 
+class EventTypeDetail(models.Model):
+    class Meta:
+        verbose_name = "赛事所有类型"
+        verbose_name_plural = "赛事所有类型"
+
+    type = models.ForeignKey(EventType, on_delete=models.CASCADE, verbose_name='类型')
+    lines = models.CharField(verbose_name='资格线', max_length=50)
+    price = models.CharField(verbose_name='项目价格', max_length=50)
+    event = models.ForeignKey(Events, verbose_name='赛事类型', on_delete=models.CASCADE)
+
+
+
 class EventsDetail(models.Model):
 
     class Meta:
@@ -105,8 +120,7 @@ class EventsDetail(models.Model):
     event_site = models.URLField(verbose_name='官方网址')
     evnet_org = models.CharField(verbose_name='主办方', max_length=20)
     evnet_represent = models.CharField(verbose_name='代表', max_length=100)
-    event_type = models.ManyToManyField(EventType, verbose_name='赛事类型')
-    can_apply_count = models.IntegerField(verbose_name='可报名人数', default=0)
+    apply_count = models.IntegerField(verbose_name='可报名人数', default=0)
     event_apply_begin_time = models.DateTimeField(verbose_name='报名开始时间')
     event_quit_end_time = models.DateTimeField(verbose_name='退赛截至时间')
     enent_reapply_begin_time = models.DateTimeField(verbose_name='重开报名时间')

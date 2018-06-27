@@ -57,10 +57,11 @@ class EventsTrafficAdmin(admin.StackedInline):
 class EventsScAdmin(admin.StackedInline):
     model = EventSc
 
-
 class EventsDetailAdmin(admin.StackedInline):
     model = EventsDetail
-    filter_horizontal = ('event_type',)
+
+class EventsTypeAdmin(admin.TabularInline):
+    model = EventTypeDetail
 
 
 @admin.register(Events)
@@ -71,6 +72,7 @@ class EventsAdmin(admin.ModelAdmin):
     list_display = ('event_date', 'name', 'location', 'evnet_weight', 'event_province', 'event_project')
     list_filter = ('evnet_weight',)
     inlines = [
+        EventsTypeAdmin,
         EventsDetailAdmin,
         EventsRulesAdmin,
         EventsTrafficAdmin,

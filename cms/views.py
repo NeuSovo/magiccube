@@ -39,10 +39,10 @@ class EventView(MultipleJsonResponseMixin, ListView):
         project = self.request.GET.get('project', None)
 
         if year: kwargs['event_date__year'] = year
-        # type 无用
-        # if type_: kwargs['event_type'] = type_
         if province: kwargs['event_province_id'] = province
         if project: kwargs['event_project_id'] = project
+        if type_:kwargs['eventtypedetail__type'] = type_
+
         queryset = super(EventView, self).get_queryset()
         queryset = queryset.filter(**kwargs)
         return queryset
@@ -50,6 +50,7 @@ class EventView(MultipleJsonResponseMixin, ListView):
 
 class EventDetailView(JsonResponseMixin, DetailView):
     model = EventsDetail
+    foreign = True
     many = True
     datetime_type = 'string'
     pk_url_kwarg = 'id'
@@ -130,3 +131,23 @@ def get_event_filter_view(request):
     res['all_type'] = serializer(all_type)
 
     return parse_info(res)
+
+
+def get_event_type_view(request, event_id):
+    res = dict()
+    queryset = EventTypeDetail.objects.filter(event_id = event_id)
+    all_type = []
+    for i in queryset:
+        all_type.append({
+            'id': i.id,
+            'type_name': i.type.type,
+            'type_lines': i.lines,
+            'type_price': i.price
+            })
+
+    res['type'] = all_type
+    event = Events.objects.get(id=event_id)
+    res['can_apply_count'] = int(event.eventsdetail.apply_count) - len(event.applyuser_set.filter(is_check=1))
+
+    return parse_info(res)
+    
