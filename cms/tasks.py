@@ -6,6 +6,7 @@ from celery.decorators import task
 from django.http import JsonResponse
 from django.core.mail import EmailMessage
 from .apps import email_check_template
+from .models import User
 
 @task
 def send_check_email(to_user, fail_silently=False):
@@ -19,7 +20,7 @@ def send_check_email(to_user, fail_silently=False):
     to_user.save()
 
 
-def handle_req(func):
+def handle_req_body(func):
     def wrapper(*args, **kwargs):
         request = args[0]
         try:
@@ -30,13 +31,16 @@ def handle_req(func):
     return wrapper
 
 
-def parse_info(data):
+def parse_info(data, header=None):
     """
     parser_info:
     param must be a dict
     parse dict data to json,and return HttpResponse
     """
-    return JsonResponse(data)
+    response = JsonResponse(data)
+    if header:
+        response.set_cookie('access_token', header['access_token'])
+    return response
 
 
 def gen_jwt(user_id, user_email, do,exp_hours=1):
@@ -55,3 +59,37 @@ def de_jwt(jwt_payload):
         return jwt.decode(jwt_payload, 'secret', leeway=10)
     except Exception as e:
         raise e
+
+
+class CheckToken(object):
+    token = None
+    user = None
+
+    def get_current_token(self):
+        self.token = self.request.POST.get('access_token', '') or json.loads(self.request.body).get('access_token', '')
+        return self.token
+
+    def check_token(self):
+        self.get_current_token()
+        user = self.get_user_by_token()
+        if user:
+            self.user = user
+            return True
+        return False
+
+    def wrap_check_token_result(self):
+        result = self.check_token()
+        if not result:
+            self.message = 'Token 错误或过期，请重新登录'
+            return False
+        return True
+
+    def get_user_by_token(self):
+        try:
+            payload = de_jwt(self.token)
+        except Exception as e:
+            return None
+
+        user_id = payload['user_id']
+
+        return User.get_user_by_id(user_id)

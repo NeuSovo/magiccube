@@ -175,7 +175,7 @@ class User(models.Model):
     def username(self):
         return self.userprofile.username
 
-    email = models.CharField(verbose_name='邮箱', max_length=100)
+    email = models.CharField(verbose_name='邮箱', max_length=100, unique=True)
     password = models.CharField(verbose_name='密码', max_length=50)
     is_email_check = models.IntegerField(verbose_name='邮箱是否验证', choices=[[0, '未验证'], [1, '已发送邮件'], [2, '已验证']])
     reg_date = models.DateTimeField(auto_now_add=True, verbose_name="注册时间")
@@ -184,18 +184,14 @@ class User(models.Model):
     @staticmethod
     def is_exist_user(email):
         user = User.get_user_by_email(email)
+        print (user)
+        print (user is not None)
         return user is not None
 
 
     @staticmethod
-    def reg_user(body):
-        try:
-            email = body.get('email')
-            username = body.get('username')
-            password = make_password(body.get('password'))
-        except Exception as e:
-            return None
-
+    def reg_user(email, username, password):
+        password = make_password(password)
         user = User(email=email, password=password, is_email_check=0)
         user.save()
         UserProfile(user=user, username=username).save()
@@ -203,9 +199,9 @@ class User(models.Model):
         return user
 
     @staticmethod
-    def login_user(body):
-        email = body.get('email')
-        password = body.get('password')
+    def login_user(email, password):
+        # email = body.get('email')
+        # password = body.get('password')
         tmp_user = User.get_user_by_email(email)
 
         if tmp_user:
@@ -233,17 +229,6 @@ class User(models.Model):
 
         return user
 
-    @staticmethod
-    def get_user_by_jwt(jwt):
-        from .tasks import de_jwt
-        try:
-            payload = de_jwt(jwt)
-        except Exception as e:
-            return None
-
-        user_id = payload['user_id']
-
-        return User.get_user_by_id(user_id)
 
 
 class UserProfile(models.Model):
