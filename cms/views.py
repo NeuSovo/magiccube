@@ -38,8 +38,9 @@ class EventView(MultipleJsonResponseMixin, ListView):
         province = self.request.GET.get('province', None)
         project = self.request.GET.get('project', None)
 
-        if year: kwargs['event_year_id'] = year
-        if type_: kwargs['event_type'] = type_
+        if year: kwargs['event_date__year'] = year
+        # type 无用
+        # if type_: kwargs['event_type'] = type_
         if province: kwargs['event_province_id'] = province
         if project: kwargs['event_project_id'] = project
         queryset = super(EventView, self).get_queryset()
@@ -120,12 +121,10 @@ def check_email_view(request):
 
 def get_event_filter_view(request):
     res = dict()
-    all_year = EventYear.objects.all()
     all_project = EventProject.objects.all()
     all_province = EventProvince.objects.all()
     all_type = EventType.objects.all()
 
-    res['all_year'] = serializer(all_year)
     res['all_project'] = serializer(all_project)
     res['all_province'] = serializer(all_province)
     res['all_type'] = serializer(all_type)

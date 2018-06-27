@@ -24,18 +24,7 @@ class News(models.Model):
     create_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
     create_user = models.CharField(verbose_name="播报员", max_length=30)
     is_top = models.IntegerField(verbose_name='是否置顶', default=0, choices=is_top_choices)
-
-
-class EventYear(models.Model):
-
-    class Meta:
-        verbose_name = "赛事年份"
-        verbose_name_plural = "赛事年份"
-
-    year = models.CharField(verbose_name="年份", max_length=10)
-
-    def __str__(self):
-        return self.year
+    news_url = models.URLField(verbose_name="链接")
 
 
 class EventProject(models.Model):
@@ -48,7 +37,6 @@ class EventProject(models.Model):
         return self.project
 
     project = models.CharField(verbose_name="项目", max_length=50)
-
 
 
 class EventProvince(models.Model):
@@ -70,9 +58,11 @@ class EventType(models.Model):
         verbose_name_plural = "赛事类型"
 
     def __str__(self):
-        return self.type
+        return ','.join(['类型:' + str(self.type), '资格线:' + str(self.lines), '项目价格:' + str(self.price)])
 
     type = models.CharField(verbose_name="类型", max_length=50)
+    lines = models.CharField(verbose_name='资格线', max_length=50)
+    price = models.CharField(verbose_name='项目价格', max_length=50)
     
 
 class Events(models.Model):
@@ -92,17 +82,14 @@ class Events(models.Model):
     def __str__(self):
         return self.name
 
-    event_date = models.DateTimeField(auto_now_add=False, verbose_name="日期")
+    event_date = models.DateTimeField(auto_now_add=True, verbose_name="日期")
     name =  models.CharField(verbose_name="名称", max_length=50)
     location = models.CharField(verbose_name="位置", max_length=50)
     country = models.CharField(verbose_name='国家', max_length=100, default="中国")
     evnet_weight = models.IntegerField(verbose_name='优先级', choices=evnet_weight_choices, default=3)
-    can_apply_count = models.IntegerField(verbose_name='可报名人数', default=0)
 
-    event_year = models.ForeignKey(EventYear, on_delete=models.SET(-1), verbose_name='赛事年份', default=-1)
-    event_type = models.ManyToManyField(EventType, verbose_name='赛事类型', default=-1)
-    event_province = models.ForeignKey(EventProvince, on_delete=models.SET(-1), verbose_name='赛事省份', default=-1)
-    event_project = models.ForeignKey(EventProject, on_delete=models.SET(-1), verbose_name='赛事项目', default=-1)
+    event_province = models.ForeignKey(EventProvince, on_delete=models.SET(-1), verbose_name='赛事省份')
+    event_project = models.ForeignKey(EventProject, on_delete=models.SET(-1), verbose_name='赛事项目')
 
 
 class EventsDetail(models.Model):
@@ -114,10 +101,42 @@ class EventsDetail(models.Model):
     def __str__(self):
         return ''
 
-    id = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
-    event_detail = models.TextField(verbose_name='赛事详情', null=True)
-    event_rules = models.TextField(verbose_name='赛事规则', null=True)
-    event_traffic = models.ImageField(upload_to='img', verbose_name='赛事交通', null=True)
+    event = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
+    event_site = models.URLField(verbose_name='官方网址')
+    evnet_org = models.CharField(verbose_name='主办方', max_length=20)
+    evnet_represent = models.CharField(verbose_name='代表', max_length=100)
+    event_type = models.ManyToManyField(EventType, verbose_name='赛事类型')
+    can_apply_count = models.IntegerField(verbose_name='可报名人数', default=0)
+    event_apply_begin_time = models.DateTimeField(verbose_name='报名开始时间')
+    event_quit_end_time = models.DateTimeField(verbose_name='退赛截至时间')
+    enent_reapply_begin_time = models.DateTimeField(verbose_name='重开报名时间')
+    event_apply_end_time = models.DateTimeField(verbose_name='报名结束时间')
+    event_detail = models.TextField(verbose_name='关于比赛', null=True)
+
+
+class EventRules(models.Model):
+    class Meta:
+        verbose_name = "赛事规则"
+        verbose_name_plural = "赛事规则"
+    event = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
+    event_rules = models.CharField(max_length=155, null=True, blank=True)
+
+
+class EventTraffic(models.Model):
+    class Meta:
+        verbose_name = "赛事交通"
+        verbose_name_plural = "赛事交通"
+    event = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
+    event_traffic = models.ImageField(upload_to='img', verbose_name='赛事交通', null=True, blank=True)
+
+
+class EventSc(models.Model):
+    class Meta:
+        verbose_name = "赛事赛程"
+        verbose_name_plural = "赛事赛程"
+
+    event = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
+    event_sc = models.CharField(max_length=155, null=True, blank=True)
 
 
 class HotVideo(models.Model):

@@ -47,8 +47,20 @@ class NewsAdmin(admin.ModelAdmin):
         obj.save()
 
 
+
+class EventsRulesAdmin(admin.StackedInline):
+    model = EventRules
+
+class EventsTrafficAdmin(admin.StackedInline):
+    model = EventTraffic
+
+class EventsScAdmin(admin.StackedInline):
+    model = EventSc
+
+
 class EventsDetailAdmin(admin.StackedInline):
     model = EventsDetail
+    filter_horizontal = ('event_type',)
 
 
 @admin.register(Events)
@@ -56,11 +68,13 @@ class EventsAdmin(admin.ModelAdmin):
     '''
         Admin View for Events
     '''
-    list_display = ('event_date', 'name', 'location', 'evnet_weight','event_year', 'event_province', 'event_project')
+    list_display = ('event_date', 'name', 'location', 'evnet_weight', 'event_province', 'event_project')
     list_filter = ('evnet_weight',)
-    filter_horizontal = ('event_type',)
     inlines = [
         EventsDetailAdmin,
+        EventsRulesAdmin,
+        EventsTrafficAdmin,
+        EventsScAdmin,
     ]
     # raw_id_fields = ('',)
     # readonly_fields = ('',)
@@ -83,7 +97,7 @@ class ApplyUserAdmin(admin.ModelAdmin):
 admin.site.register(EventType)
 admin.site.register(EventProvince)
 admin.site.register(EventProject)
-admin.site.register(EventYear)
+# admin.site.register(EventYear)
 
 admin.site.register(HotVideo)
 admin.site.site_header = '项目管理中心'
