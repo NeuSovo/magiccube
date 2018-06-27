@@ -56,7 +56,7 @@ def gen_jwt(user_id, user_email, do,exp_hours=1):
 
 def de_jwt(jwt_payload):
     try:
-        return jwt.decode(jwt_payload, 'secret', leeway=10)
+        return jwt.decode(jwt_payload, 'secret', leeway=10000)
     except Exception as e:
         raise e
 
@@ -66,7 +66,7 @@ class CheckToken(object):
     user = None
 
     def get_current_token(self):
-        self.token = self.request.POST.get('access_token', '') or json.loads(self.request.body).get('access_token', '')
+        self.token = self.request.POST.get('access_token', '') or self.request.COOKIES.get('access_token',)
         return self.token
 
     def check_token(self):

@@ -3,7 +3,7 @@ from dss.Mixin import MultipleJsonResponseMixin, JsonResponseMixin, FormJsonResp
 from dss.Serializer import serializer
 
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, FormView, CreateView
+from django.views.generic import ListView, DetailView, FormView, CreateView, UpdateView
 
 from .models import *
 from .tasks import *
@@ -100,10 +100,17 @@ class ApplyUserView(FormJsonResponseMixin, CheckToken, FormView):
         """
         return parse_info({'msg': 'token'})
 
+
     def post(self, request, *args, **kwargs):
         if not self.wrap_check_token_result():
             return self.render_to_response({'msg': self.message})
-        return self.render_to_response({'msg': self.user.email})
+
+        for i in request.POST.keys():
+            kwargs[i] = request.POST[i]
+
+        apply_ = ApplyUser.create(user=self.user, **kwargs)
+        return self.render_to_response(serializer(apply_, exclude_attr=('password', 'id', 'reg_date'), datetime_format='string'))
+
 
 
 class RegUserView(FormJsonResponseMixin, CreateView):
@@ -142,6 +149,26 @@ class LoginView(FormJsonResponseMixin, FormView):
         self.resp['access_token'] = access_token
 
         return self.render_to_response(self.resp)
+
+
+class UserProfileView(FormJsonResponseMixin, CheckToken, UpdateView):
+    model = UserProfile
+
+    def get(self, request, *args, **kwargs):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+
+        return self.render_to_response(serializer(self.user.userprofile, exclude_attr=('password', 'id', 'reg_date')))
+    
+    def post(self, request, *args, **kwargs):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+
+        for i in request.POST.keys():
+            kwargs[i] = request.POST[i]
+
+        self.user.userprofile.update(**kwargs)
+        return self.render_to_response(serializer(self.user.userprofile, exclude_attr=('password', 'id', 'reg_date')))
 
 
 def check_email_view(request):

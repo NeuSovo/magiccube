@@ -230,7 +230,6 @@ class User(models.Model):
         return user
 
 
-
 class UserProfile(models.Model):
 
     class Meta:
@@ -239,8 +238,31 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User,on_delete=models.CASCADE, primary_key=True)
     username = models.CharField(verbose_name='姓名', max_length=100)
-    sex = models.CharField(max_length=20, null=True, blank=True)
+    sex = models.CharField(max_length=20, null=True, blank=True, verbose_name='性别')
+    birthday = models.CharField(max_length=20, null=True, blank=True, verbose_name='国家')
+    phone = models.BigIntegerField(null=True, blank=True, verbose_name='电话')
+    country = models.CharField(max_length=20, null=True, blank=True, verbose_name='地区')
+    province = models.CharField(max_length=20, null=True, blank=True, verbose_name='省份')
+    city = models.CharField(max_length=20, null=True, blank=True, verbose_name='城市')
+
+    paperwork_type = models.CharField(max_length=20, default="身份证", verbose_name='证件类型')
+
+    paperwork_id = models.BigIntegerField(verbose_name='证件号', null=True, blank=True)
     # 待定
+
+
+    def update(self, **kwagrs):
+        self.username = kwagrs.get('username','')
+        self.sex = kwagrs.get('sex','')
+        self.birthday = kwagrs.get('birthday','')
+        self.phone = kwagrs.get('phone', 0)
+        self.country = kwagrs.get('country','')
+        self.province = kwagrs.get('province','')
+        self.city = kwagrs.get('city','')
+        self.paperwork_type = kwagrs.get('paperwork_type','')
+        self.paperwork_id = kwagrs.get('paperwork_id', 0)
+        self.save()
+
 
 
 class ApplyUser(models.Model):
@@ -284,3 +306,15 @@ class ApplyUser(models.Model):
     remarks = models.CharField(max_length=155, null=True, blank=True, verbose_name='留言')
     is_check = models.IntegerField(default=0, choices=[[0, '未缴费'], [1, '已缴费']], verbose_name='是否缴费')
 
+    @staticmethod
+    def create(user, **kwagrs):
+        import uuid
+        uuid = str(uuid.uuid1())
+        event = Events.objects.get(id=kwagrs.get('event_id', 0))
+        apply_user = user
+        total_price = kwagrs.get('total_price', 0)
+        remarks = kwagrs.get('remarks', 0)
+        apply_ = ApplyUser(apply_id=uuid, event=event, apply_user=apply_user, total_price=total_price, remarks=remarks)
+        apply_.save()
+
+        return apply_
