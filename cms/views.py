@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from dss.Mixin import MultipleJsonResponseMixin, JsonResponseMixin
+from dss.Mixin import MultipleJsonResponseMixin, JsonResponseMixin, FormJsonResponseMixin
 from dss.Serializer import serializer
 
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, FormView
 
 from .models import *
 from .tasks import *
@@ -64,6 +64,26 @@ class HotVideoListView(MultipleJsonResponseMixin, ListView):
     datetime_type = 'string'
 
 
+class ApplyUserView(FormJsonResponseMixin, FormView):
+    model = ApplyUser
+
+    def check_user(self, jwt):
+        return User.get_user_by_jwt(jwt)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests and instantiates a blank version of the form.
+        """
+        return parse_info({'msg': 'token'})
+
+    def post(self, request, *args, **kwargs):
+        user = self.check_user(request.POST.get('jwt_token', 'None'))
+        if not user:
+            return parse_info({'msg': 'token错误或过期'})
+
+        return parse_info({'msg': user.email})
+
+
 @handle_req
 def reg_view(request, body):
     res = dict()
@@ -75,6 +95,7 @@ def reg_view(request, body):
     if not user:
         return parse_info({"msg": 'error'})     #
 
+    print (1)
     send_check_email(to_user=user)
     res['user_obj'] =  serializer(user, exclude_attr=('password', 'id', 'reg_date'))
     res['msg'] = '已发送邮箱链接,,,'
@@ -102,14 +123,15 @@ def check_email_view(request):
     res = dict()
     jwt_payload = request.GET.get('token')
     try:
-        user_info = de_jwt(jwt_payload)
-    except:
+        # user_info = de_jwt(jwt_payload)
+        user = User.get_user_by_jwt(jwt_payload)
+    except Exception as e:
         return parse_info({'msg': '连接可能失效或者过期'})
 
     if user.is_email_check == 2:
         return parse_info({'msg': '已验证'})
 
-    user = User.get_user_by_id(user_info['user_id'])
+    # user = User.get_user_by_id(user_info['user_id'])
     user.is_email_check = 2
     user.save()
 

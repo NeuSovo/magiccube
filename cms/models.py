@@ -219,6 +219,7 @@ class User(models.Model):
         try:
             user = User.objects.get(id=id)
         except Exception as e:
+            raise e
             return None
 
         return user
@@ -231,6 +232,18 @@ class User(models.Model):
             return None
 
         return user
+
+    @staticmethod
+    def get_user_by_jwt(jwt):
+        from .tasks import de_jwt
+        try:
+            payload = de_jwt(jwt)
+        except Exception as e:
+            return None
+
+        user_id = payload['user_id']
+
+        return User.get_user_by_id(user_id)
 
 
 class UserProfile(models.Model):

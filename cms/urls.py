@@ -14,4 +14,5 @@ urlpatterns = [
     path('event/getfilter', get_event_filter_view),
     path('event/detail/<str:id>', EventDetailView.as_view()),
     path('event/type/<str:event_id>', get_event_type_view),
+    path('event/apply', ApplyUserView.as_view())
 ]
