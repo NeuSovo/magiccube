@@ -2,6 +2,7 @@
 from dss.Mixin import MultipleJsonResponseMixin, JsonResponseMixin, FormJsonResponseMixin
 from dss.Serializer import serializer
 
+from django.http import Http404
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, FormView, CreateView, UpdateView
 
@@ -107,8 +108,8 @@ class ApplyUserView(FormJsonResponseMixin, CheckToken, FormView):
 
         for i in request.POST.keys():
             kwargs[i] = request.POST[i]
-
-        apply_ = ApplyUser.create(user=self.user, **kwargs)
+        apply_types = request.POST.getlist('types')
+        apply_ = ApplyUser.create(user=self.user, apply_types=apply_types, **kwargs)
         return self.render_to_response(serializer(apply_, exclude_attr=('password', 'id', 'reg_date'), datetime_format='string'))
 
 
@@ -148,7 +149,9 @@ class LoginView(FormJsonResponseMixin, FormView):
         self.resp['profile'] = serializer(user.userprofile, exclude_attr=('password', 'id', 'reg_date'))
         self.resp['access_token'] = access_token
 
-        return self.render_to_response(self.resp)
+        response = self.render_to_response(self.resp)
+        response.set_cookie('access_token', access_token)
+        return response
 
 
 class UserProfileView(FormJsonResponseMixin, CheckToken, UpdateView):
@@ -209,7 +212,11 @@ def get_event_filter_view(request):
 
 def get_event_type_view(request, event_id):
     res = dict()
-    queryset = EventTypeDetail.objects.filter(event_id = event_id)
+    try:
+        queryset = EventTypeDetail.objects.filter(event_id = event_id)
+    except Exception as e:
+        raise Http404("event_id：{} 错误".format(event_id))
+
     all_type = []
     for i in queryset:
         all_type.append({
@@ -224,4 +231,25 @@ def get_event_type_view(request, event_id):
     res['can_apply_count'] = int(event.eventsdetail.apply_count) - len(event.applyuser_set.filter(is_check=1))
 
     return parse_info(res)
-    
+
+
+def get_event_apply_user_view(request, event_id):
+    res = dict()
+    try:
+        event = Events.objects.get(id=event_id)
+        queryset = event.applyuser_set.filter(is_check=0)
+    except Exception as e:
+        raise Http404("event_id：{} 错误".format(event_id))
+
+    apply_list = []
+    for i in queryset:
+        apply_list.append({
+            'user_obj': {
+                'username': i.apply_user.userprofile.username,
+                'sex': i.apply_user.userprofile.sex or '',
+            },
+            'apply_types':[ i.apply_type.type.type for i in i.applyusertypes_set.all()],
+            'apply_time': i.create_time
+        })
+    res['list'] = apply_list
+    return parse_info(res, safe=True)

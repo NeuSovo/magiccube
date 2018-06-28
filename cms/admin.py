@@ -82,6 +82,8 @@ class EventsAdmin(admin.ModelAdmin):
     # readonly_fields = ('',)
     # search_fields = ('',)
 
+class AppplyUserTypesAdmin(admin.TabularInline):
+    model = ApplyUserTypes
 
 @admin.register(ApplyUser)
 class ApplyUserAdmin(admin.ModelAdmin):
@@ -94,6 +96,10 @@ class ApplyUserAdmin(admin.ModelAdmin):
     list_editable = ('is_check',)
     list_filter = ('is_check',)
     readonly_fields = ('create_time', )
+
+    inlines = [
+        AppplyUserTypesAdmin,
+    ]
 
 
 admin.site.register(EventType)

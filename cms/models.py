@@ -100,6 +100,9 @@ class EventTypeDetail(models.Model):
         verbose_name = "赛事所有类型"
         verbose_name_plural = "赛事所有类型"
 
+    def __str__(self):
+        return self.type.type
+
     type = models.ForeignKey(EventType, on_delete=models.CASCADE, verbose_name='类型')
     lines = models.CharField(verbose_name='资格线', max_length=50)
     price = models.CharField(verbose_name='项目价格', max_length=50)
@@ -270,6 +273,7 @@ class ApplyUser(models.Model):
     class Meta:
         verbose_name = "报名列表"
         verbose_name_plural = "报名列表"
+        ordering = ['is_check', '-create_time']
 
     def __str__(self):
         return ""
@@ -307,7 +311,7 @@ class ApplyUser(models.Model):
     is_check = models.IntegerField(default=0, choices=[[0, '未缴费'], [1, '已缴费']], verbose_name='是否缴费')
 
     @staticmethod
-    def create(user, **kwagrs):
+    def create(user,apply_types, **kwagrs):
         import uuid
         uuid = str(uuid.uuid1())
         event = Events.objects.get(id=kwagrs.get('event_id', 0))
@@ -317,4 +321,19 @@ class ApplyUser(models.Model):
         apply_ = ApplyUser(apply_id=uuid, event=event, apply_user=apply_user, total_price=total_price, remarks=remarks)
         apply_.save()
 
+        apply_types_list = []
+        print (apply_types)
+        for i in apply_types:
+            apply_types_list.append(ApplyUserTypes(apply=apply_, apply_type=EventTypeDetail.objects.get(id=i)))
+
+        ApplyUserTypes.objects.bulk_create(apply_types_list)
         return apply_
+
+
+class ApplyUserTypes(models.Model):
+    class Meta:
+        verbose_name = "报名的类型"
+        verbose_name_plural = "报名的类型"
+
+    apply = models.ForeignKey(ApplyUser, on_delete=models.CASCADE)
+    apply_type = models.ForeignKey(EventTypeDetail, on_delete=models.SET(-1))
