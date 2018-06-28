@@ -37,7 +37,8 @@ def parse_info(data, header=None, *args, **kwargs):
     param must be a dict
     parse dict data to json,and return HttpResponse
     """
-    response = JsonResponse(data, *args, **kwargs)
+    response = JsonResponse
+(data, *args, **kwargs)
     if header:
         response.set_cookie('access_token', header['access_token'])
     return response
