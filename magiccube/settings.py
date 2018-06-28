@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "cms",
     'djcelery',
+    'simditor'
 ]
 
 MIDDLEWARE = [
@@ -153,22 +154,22 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
 
-# SIMDITOR_UPLOAD_PATH = 'uploads/'
-# SIMDITOR_IMAGE_BACKEND = 'pillow'
+SIMDITOR_UPLOAD_PATH = 'uploads/'
+SIMDITOR_IMAGE_BACKEND = 'pillow'
 
-# SIMDITOR_TOOLBAR = [
-#     'title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale',
-#     'color', '|', 'ol', 'ul', 'blockquote', '|', 'link',
-#     'image', 'hr', '|', 'indent', 'outdent', 'alignment', 'fullscreen',
-# ]
+SIMDITOR_TOOLBAR = [
+    'title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale',
+    'color', '|', 'ol', 'ul', 'blockquote', '|', 'link',
+    'image', 'hr', '|', 'indent', 'outdent', 'alignment', 'fullscreen',
+]
 
-# SIMDITOR_CONFIGS = {
-#     'toolbar': SIMDITOR_TOOLBAR,
-#     'upload': {
-#         'url': '/simditor/upload/',
-#         'fileKey': 'upload'
-#     },
-#     'emoji': {
-#         'imagePath': '/static/simditor/images/emoji/'
-#     }
-# }
+SIMDITOR_CONFIGS = {
+    'toolbar': SIMDITOR_TOOLBAR,
+    'upload': {
+        'url': '/simditor/upload/',
+        'fileKey': 'upload'
+    },
+    'emoji': {
+        'imagePath': '/static/simditor/images/emoji/'
+    }
+}

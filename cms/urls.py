@@ -7,6 +7,7 @@ urlpatterns = [
     path('auth/checkemail', check_email_view),
 
     path('user/profile', UserProfileView.as_view()),
+    path('user/getapply', GetUserApplyView.as_view()),
     
     path('index/news/', NewsList.as_view()),
     path('index/hotvideo/', HotVideoListView.as_view()),

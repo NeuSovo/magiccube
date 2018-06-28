@@ -111,12 +111,29 @@ class ApplyUserView(FormJsonResponseMixin, CheckToken, FormView):
         if not self.wrap_check_token_result():
             return self.render_to_response({'msg': self.message})
 
+        if ApplyUser.objects.filter(apply_user=self.user).exists():
+            return parse_info({'msg': '已报名'})
+
         for i in request.POST.keys():
             kwargs[i] = request.POST[i]
         apply_types = request.POST.getlist('types')
         apply_ = ApplyUser.create(
             user=self.user, apply_types=apply_types, **kwargs)
         return self.render_to_response(serializer(apply_, exclude_attr=('password', 'id', 'reg_date'), datetime_format='string'))
+
+
+class GetUserApplyView(MultipleJsonResponseMixin, CheckToken, ListView):
+    model = ApplyUser
+    exclude_attr = ('password', 'id', 'event_id', 'reg_date', 'apply_user', 'evnet_weight',
+                    'event_province', 'event_province_id', 'event_project', 'event_project_id')
+
+    def get_queryset(self):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+        queryset = super(GetUserApplyView, self).get_queryset()
+
+        queryset = queryset.filter(apply_user=self.user)
+        return queryset
 
 
 class RegUserView(FormJsonResponseMixin, CreateView):
@@ -256,6 +273,7 @@ def get_event_apply_user_view(request, event_id):
     for i in queryset:
         apply_list.append({
             'user_obj': {
+                'id': i.apply_user.id,
                 'username': i.apply_user.userprofile.username,
                 'sex': i.apply_user.userprofile.sex or '',
             },

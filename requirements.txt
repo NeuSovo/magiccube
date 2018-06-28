@@ -1,8 +1,10 @@
 django
+anyjson
 git+https://github.com/zxh326/django-simple-serializer.git
 image
 Pillow
 PyJWT
 redis
 django-celery
+django-simditor
 celery

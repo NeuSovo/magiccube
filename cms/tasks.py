@@ -12,7 +12,8 @@ from .models import User
 def send_check_email(to_user, fail_silently=False):
     subject = 'test'
     to_list = [to_user.email]
-    html_content = email_check_template.format(username=to_user.userprofile.username, token="http://127.0.0.1:8000/api/auth/checkemail?token="+gen_jwt(to_user.id, to_user.userprofile.username, 'checkemail'))
+    token = "http://127.0.0.1:8000/api/auth/checkemail?token="+gen_jwt(to_user.id, to_user.userprofile.username, 'checkemail')
+    html_content = email_check_template.format(username=to_user.userprofile.username, token=token)
     msg = EmailMessage(subject, html_content, None, to_list)
     msg.content_subtype = "html"
     msg.send(fail_silently)
