@@ -296,24 +296,32 @@ class ApplyUser(models.Model):
         verbose_name = '赛事名称'
         return self.event.name
 
+    def get_apply_types(self):
+        return ','.join([i.apply_type.type.type for i in self.applyusertypes_set.all()])
+
+    def get_apply_status(self):
+        if self.is_check == 0:
+            status = '未缴费'
+        else:
+            status = '已缴费'
+
+        return status
+
     def checked_status(self):
         if self.is_check == 0:
-            color_code = 'red'
-            text = u'未缴费'
+            status = 'no'
         else:
-            color_code = 'green'
-            text = u'已缴费'
+            status = 'yes'
 
         return format_html(
-            '<span style="color: {};">{}</span>',
-            color_code,
-            text,
+            '<img src="/static/admin/img/icon-{}.svg" alt="True">',
+            status
         )
-    checked_status.short_description = u"状态"
+    checked_status.short_description = u"付费状态"
     get_apply_user.short_description = u'报名者邮箱'
     get_event_name.short_description = u'赛事名称'
 
-    apply_id = models.UUIDField(primary_key=True)
+    apply_id = models.UUIDField(primary_key=True, verbose_name='报名id')
     event = models.ForeignKey(
         Events, on_delete=models.SET(-1), verbose_name='报名赛事')
     apply_user = models.ForeignKey(

@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.hashers import make_password
-
+from django.http import HttpResponse
 from .models import *
+import csv
+import codecs
 
 
 class UserProfileAdmin(admin.StackedInline):
@@ -94,7 +96,6 @@ class ApplyEventsFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         return [[i.id, i.name] for i in Events.objects.all()]
 
-
     def queryset(self, request, queryset):
         if self.value():
             return queryset.filter(event__id=self.value())
@@ -107,16 +108,41 @@ class AppplyUserTypesAdmin(admin.TabularInline):
 @admin.register(ApplyUser)
 class ApplyUserAdmin(admin.ModelAdmin):
 
-    def SaveExecl(self, request, queryset):
-        pass
-    SaveExecl.short_description = "导出excel"
-    actions = ["SaveExecl", ]
+    def export_as_csv_action(description="1", fields=None, exclude=None, header=True):
+        def export_as_csv(modeladmin, request, queryset):
+            opts = modeladmin.model._meta
+            if not fields:
+                field_names = [filed for filed in opts]
+            else:
+                field_names = fields
 
-    list_display = ('get_apply_user', 'get_event_name',
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment;filename=result.csv'
+            response.write(codecs.BOM_UTF8)
+            writer = csv.writer(response)
+            if header:
+                writer.writerow(header)
+
+            for obj in queryset:
+                row = [getattr(obj, field)() if callable(
+                    getattr(obj, field)) else getattr(obj, field) for field in field_names]
+                writer.writerow(row)
+
+            return response
+        export_as_csv.short_description = description
+        return export_as_csv
+
+    # SaveExecl.short_description = "导出excel"
+    actions = [export_as_csv_action("导出excel", fields=[ 'create_time', 'apply_user', 'get_event_name', 'total_price', 'remarks', 'get_apply_types', 'get_apply_status'], 
+                                    header=['报名时间', '报名者邮箱', '报名赛事', '总价', '留言', '报名赛事' '是否缴费'])]
+
+    list_display = ('create_time', 'get_apply_user', 'get_event_name',
                     'total_price', 'checked_status', 'is_check',)
     list_editable = ('is_check',)
     list_filter = ('is_check', ApplyEventsFilter)
-    readonly_fields = ('create_time', )
+    readonly_fields = ('create_time', 'apply_id')
+
+    search_fields = ('apply_user__email',)
 
     inlines = [
         AppplyUserTypesAdmin,
