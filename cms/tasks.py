@@ -21,17 +21,6 @@ def send_check_email(to_user, fail_silently=False):
     to_user.save()
 
 
-def handle_req_body(func):
-    def wrapper(*args, **kwargs):
-        request = args[0]
-        try:
-            body = json.loads(request.body)
-        except Exception as e:
-            return {'msg': 'error'}
-        return func(*args, **kwargs, body=body)
-    return wrapper
-
-
 def parse_info(data, header=None, *args, **kwargs):
     """
     parser_info:

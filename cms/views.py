@@ -240,7 +240,8 @@ def get_event_filter_view(request):
 def get_event_type_view(request, event_id):
     res = dict()
     try:
-        queryset = EventTypeDetail.objects.filter(event_id=event_id)
+        event = Events.objects.get(id=event_id)
+        queryset = EventTypeDetail.objects.filter(event=event)
     except Exception as e:
         raise Http404("event_id：{} 错误".format(event_id))
 
@@ -254,7 +255,7 @@ def get_event_type_view(request, event_id):
         })
 
     res['type'] = all_type
-    event = Events.objects.get(id=event_id)
+    
     res['can_apply_count'] = int(
         event.eventsdetail.apply_count) - len(event.applyuser_set.filter(is_check=1))
 
