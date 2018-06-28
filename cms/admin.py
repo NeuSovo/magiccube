@@ -74,10 +74,10 @@ class EventsAdmin(admin.ModelAdmin):
     '''
     list_display = ('event_date', 'name', 'location',
                     'evnet_weight', 'event_province', 'event_project')
-    list_filter = ('evnet_weight',)
+    list_filter = ('evnet_weight', 'event_date')
     inlines = [
-        EventsTypeAdmin,
         EventsDetailAdmin,
+        EventsTypeAdmin,
         EventsRulesAdmin,
         EventsTrafficAdmin,
         EventsScAdmin,
@@ -85,6 +85,19 @@ class EventsAdmin(admin.ModelAdmin):
     # raw_id_fields = ('',)
     # readonly_fields = ('',)
     # search_fields = ('',)
+
+
+class ApplyEventsFilter(admin.SimpleListFilter):
+    title = (u'报名赛事')
+    parameter_name = 'event'
+
+    def lookups(self, request, model_admin):
+        return [[i.id, i.name] for i in Events.objects.all()]
+
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(event__id=self.value())
 
 
 class AppplyUserTypesAdmin(admin.TabularInline):
@@ -98,10 +111,11 @@ class ApplyUserAdmin(admin.ModelAdmin):
         pass
     SaveExecl.short_description = "导出excel"
     actions = ["SaveExecl", ]
+
     list_display = ('get_apply_user', 'get_event_name',
                     'total_price', 'checked_status', 'is_check',)
     list_editable = ('is_check',)
-    list_filter = ('is_check',)
+    list_filter = ('is_check', ApplyEventsFilter)
     readonly_fields = ('create_time', )
 
     inlines = [

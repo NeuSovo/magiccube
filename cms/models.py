@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 from django.utils.html import format_html
+from simditor.fields import RichTextField
 
 
 class News(models.Model):
@@ -86,7 +87,7 @@ class Events(models.Model):
         return self.name
 
     event_date = models.DateTimeField(auto_now_add=True, verbose_name="日期")
-    name = models.CharField(verbose_name="名称", max_length=50)
+    name = models.CharField(verbose_name="赛事名称", max_length=50)
     location = models.CharField(verbose_name="位置", max_length=50)
     country = models.CharField(verbose_name='国家', max_length=100, default="中国")
     evnet_weight = models.IntegerField(
@@ -125,15 +126,12 @@ class EventsDetail(models.Model):
 
     event = models.OneToOneField(
         Events, on_delete=models.CASCADE, primary_key=True)
-    event_site = models.URLField(verbose_name='官方网址')
-    evnet_org = models.CharField(verbose_name='主办方', max_length=20)
-    evnet_represent = models.CharField(verbose_name='代表', max_length=100)
-    apply_count = models.IntegerField(verbose_name='可报名人数', default=0)
-    event_apply_begin_time = models.DateTimeField(verbose_name='报名开始时间')
-    event_quit_end_time = models.DateTimeField(verbose_name='退赛截至时间')
-    enent_reapply_begin_time = models.DateTimeField(verbose_name='重开报名时间')
+    evnet_org = models.CharField(verbose_name='主办方、代表', max_length=20)
+    evnet_represent = models.CharField(verbose_name='项目及参赛资格', max_length=100)
+    apply_count = models.IntegerField(verbose_name='报名人数限制', default=0)
+    event_apply_begin_time = models.DateTimeField(verbose_name='报名起始时间')
     event_apply_end_time = models.DateTimeField(verbose_name='报名结束时间')
-    event_detail = models.TextField(verbose_name='关于比赛', null=True)
+    event_about = models.TextField(verbose_name='关于比赛', null=True)
 
 
 class EventRules(models.Model):
@@ -142,7 +140,7 @@ class EventRules(models.Model):
         verbose_name_plural = "赛事规则"
     event = models.OneToOneField(
         Events, on_delete=models.CASCADE, primary_key=True)
-    event_rules = models.CharField(max_length=155, null=True, blank=True)
+    event_rules = RichTextField(verbose_name='规则', null=True, blank=True)
 
 
 class EventTraffic(models.Model):
@@ -151,8 +149,7 @@ class EventTraffic(models.Model):
         verbose_name_plural = "赛事交通"
     event = models.OneToOneField(
         Events, on_delete=models.CASCADE, primary_key=True)
-    event_traffic = models.ImageField(
-        upload_to='img', verbose_name='赛事交通', null=True, blank=True)
+    event_traffic = RichTextField(verbose_name='赛事交通', null=True, blank=True)
 
 
 class EventSc(models.Model):
@@ -162,7 +159,7 @@ class EventSc(models.Model):
 
     event = models.OneToOneField(
         Events, on_delete=models.CASCADE, primary_key=True)
-    event_sc = models.CharField(max_length=155, null=True, blank=True)
+    event_sc = RichTextField(verbose_name='赛程', null=True, blank=True)
 
 
 class HotVideo(models.Model):
