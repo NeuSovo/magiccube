@@ -26,6 +26,13 @@ class UserTestCase(TestCase):
         self.assertEqual(rep.status_code, 200)
         self.assertContains(rep, 'profile')
 
+    def test_login_invalid_user(self):
+        c = Client()
+        rep = c.post('/api/auth/login',
+                     {'email': 'test@qq.com', 'invalidpassword': 'test'})
+        self.assertEqual(rep.status_code, 200)
+        self.assertContains(rep, 'msg')
+
     def test_re_reg(self):
         c = Client()
         rep = c.post(
@@ -217,6 +224,11 @@ class ApplyTestCase(TestCase):
         self.assertEqual(rep.status_code, 200)
         self.assertContains(rep, 'apply_id')
 
+        # re apply
+        rep = self.c.post('/api/event/apply', data)
+        self.assertEqual(rep.status_code, 200)
+        self.assertContains(rep, 'msg')
+
     def test_get_user_apply(self):
         rep = self.c.get('/api/user/getapply')
         self.assertEqual(rep.status_code, 200)
@@ -235,3 +247,21 @@ class ApplyTestCase(TestCase):
         c = Client()
         rep = c.get('/api/event/applyuser/404')
         self.assertEqual(rep.status_code, 404)
+
+
+class ParagraphTestCase(TestCase):
+
+    def test_user_paragraph(self):
+        c = Client()
+        rep = c.get('/api/paragraph/user/')
+        self.assertEqual(rep.status_code, 200)
+
+    def test_rzg_paragraph(self):
+        c = Client()
+        rep = c.get('/api/paragraph/rzg/')
+        self.assertEqual(rep.status_code, 200)
+
+    def test_rzg_paragraph(self):
+        c = Client()
+        rep = c.get('/api/paragraph/jl/')
+        self.assertEqual(rep.status_code, 200)

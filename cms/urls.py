@@ -23,5 +23,7 @@ urlpatterns = [
     path('event/applyuser/<str:event_id>', get_event_apply_user_view),
     path('event/apply', ApplyUserView.as_view()),
 
-    path('paragraph/user', get_user_paragraph)
+    path('paragraph/user/', UserParagraphView.as_view()),
+    path('paragraph/rzg/', RzgParagraphView.as_view()),
+    path('paragraph/jl/', JlParagraphView.as_view())
 ]

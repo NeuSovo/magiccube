@@ -29,6 +29,17 @@ class News(models.Model):
     news_url = models.URLField(verbose_name="链接")
 
 
+class HotVideo(models.Model):
+
+    class Meta:
+        verbose_name = "精彩视频"
+        verbose_name_plural = "精彩视频"
+        ordering = ['-add_time']
+
+    title = models.CharField(verbose_name="标题", max_length=50)
+    video_url = models.URLField(verbose_name="链接")
+    add_time = models.DateTimeField(auto_now_add=True)
+
 class EventProject(models.Model):
 
     class Meta:
@@ -163,16 +174,6 @@ class EventSc(models.Model):
     event_sc = RichTextField(verbose_name='赛程', null=True, blank=True)
 
 
-class HotVideo(models.Model):
-
-    class Meta:
-        verbose_name = "精彩视频"
-        verbose_name_plural = "精彩视频"
-
-    title = models.CharField(verbose_name="标题", max_length=50)
-    video_url = models.URLField(verbose_name="链接")
-
-
 class User(models.Model):
 
     class Meta:
@@ -242,6 +243,9 @@ class UserProfile(models.Model):
     class Meta:
         verbose_name = "用户详情"
         verbose_name_plural = "用户详情"
+
+    def __str__(self):
+        return self.user.email
 
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)
@@ -366,11 +370,16 @@ class UserParagraph(models.Model):
     class Meta:
         verbose_name = "用户段位认证"
         verbose_name_plural = "用户段位认证"
+        ordering = ['user']
 
     def __str__(self):
-        return self.user.userprofile.username
+        return self.user.username
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="用户")
+    @property
+    def username(self):
+        return self.user.username
+    
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="用户")
     rz_date = models.DateTimeField(auto_now_add=True, verbose_name="认证时间")
     paragraph = models.CharField(max_length=100, verbose_name="段位")
 
@@ -379,6 +388,7 @@ class RzgParagraph(models.Model):
     class Meta:
         verbose_name = "认证官"
         verbose_name_plural = "认证官"
+        ordering = ['name']
 
     country = models.CharField(max_length=50, verbose_name="地区")
     name = models.CharField(max_length=50, verbose_name="姓名")
@@ -391,6 +401,7 @@ class JlParagraph(models.Model):
     class Meta:
         verbose_name = "教练证书"
         verbose_name_plural = "教练证书"
+        ordering = ['name']
 
     country = models.CharField(max_length=50, verbose_name="地区")
     name = models.CharField(max_length=50, verbose_name="姓名")
