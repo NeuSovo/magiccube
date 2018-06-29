@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -27,19 +26,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-#Email设置
+# Email设置
 
 ADMINS = (
-    ('Admins','*'),
+    ('Admins', '*'),
 )
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST= 'smtp.exmail.qq.com'
-EMAIL_PORT= 465        
-EMAIL_HOST_USER = 'i@zxh326.cn'  
-EMAIL_HOST_PASSWORD = 'Zxh326//' 
-EMAIL_SUBJECT_PREFIX = 'website' 
-EMAIL_USE_SSL = True 
-DEFAULT_FROM_EMAIL = SERVER_EMAIL = EMAIL_HOST_USER 
+EMAIL_HOST = 'smtp.exmail.qq.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'i@zxh326.cn'
+EMAIL_HOST_PASSWORD = 'Zxh326//'
+EMAIL_SUBJECT_PREFIX = 'website'
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = EMAIL_HOST_USER
 
 SEND_BROKEN_LINK_EMAILS = True
 MANAGERS = ADMINS
@@ -53,7 +52,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     "cms",
+    'shrine',
     'djcelery',
     'simditor'
 ]
@@ -88,7 +89,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'magiccube.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -117,7 +117,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -133,7 +132,6 @@ USE_L10N = True
 # this project is for groups so special No need to set
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
@@ -144,32 +142,31 @@ MEDIA_URL = '/media/'
 
 BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
- 
-#celery内容等消息的格式设置
-CELERY_ACCEPT_CONTENT = ['application/json',]
+
+# celery内容等消息的格式设置
+CELERY_ACCEPT_CONTENT = ['application/json', ]
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
- 
-#celery时区设置，使用settings中TIME_ZONE同样的时区
+
+# celery时区设置，使用settings中TIME_ZONE同样的时区
 CELERY_TIMEZONE = TIME_ZONE
 
+# SIMDITOR_UPLOAD_PATH = 'uploads/'
+# SIMDITOR_IMAGE_BACKEND = 'pillow'
 
-SIMDITOR_UPLOAD_PATH = 'uploads/'
-SIMDITOR_IMAGE_BACKEND = 'pillow'
+# SIMDITOR_TOOLBAR = [
+#     'title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale',
+#     'color', '|', 'ol', 'ul', 'blockquote', '|', 'link',
+#     'image', 'hr', '|', 'indent', 'outdent', 'alignment', 'fullscreen',
+# ]
 
-SIMDITOR_TOOLBAR = [
-    'title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale',
-    'color', '|', 'ol', 'ul', 'blockquote', '|', 'link',
-    'image', 'hr', '|', 'indent', 'outdent', 'alignment', 'fullscreen',
-]
-
-SIMDITOR_CONFIGS = {
-    'toolbar': SIMDITOR_TOOLBAR,
-    'upload': {
-        'url': '/simditor/upload/',
-        'fileKey': 'upload'
-    },
-    'emoji': {
-        'imagePath': '/static/simditor/images/emoji/'
-    }
-}
+# SIMDITOR_CONFIGS = {
+#     'toolbar': SIMDITOR_TOOLBAR,
+#     'upload': {
+#         'url': '/simditor/upload/',
+#         'fileKey': 'upload'
+#     },
+#     'emoji': {
+#         'imagePath': '/static/simditor/images/emoji/'
+#     }
+# }
