@@ -1,14 +1,13 @@
 from django.http import HttpResponse
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from .models import *
 from .serializers import *
+from .filters import *
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework.decorators import detail_route
-from django.views.decorators.csrf import csrf_exempt
-
 from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class JSONResponse(HttpResponse):
@@ -79,6 +78,8 @@ class MiddleSet(mixins.ListModelMixin, generics.GenericAPIView):
 class TestViewSet(viewsets.ModelViewSet):
     queryset = test.objects.all()
     serializer_class = SnippetSerializer
+    # filter_backends = (DjangoFilterBackend)
+    # filter_fields = ('title',)
 
 
 class Test1ViewSet(viewsets.ModelViewSet):
