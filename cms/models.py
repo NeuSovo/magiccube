@@ -5,7 +5,6 @@ from simditor.fields import RichTextField
 
 
 class News(models.Model):
-
     is_top_choices = (
         (0, '不置顶'),
         (1, '置顶')
@@ -30,7 +29,6 @@ class News(models.Model):
 
 
 class EventProject(models.Model):
-
     class Meta:
         verbose_name = "赛事项目"
         verbose_name_plural = "赛事项目"
@@ -42,7 +40,6 @@ class EventProject(models.Model):
 
 
 class EventProvince(models.Model):
-
     class Meta:
         verbose_name = "赛事省份"
         verbose_name_plural = "赛事省份"
@@ -54,7 +51,6 @@ class EventProvince(models.Model):
 
 
 class EventType(models.Model):
-
     class Meta:
         verbose_name = "赛事类型"
         verbose_name_plural = "赛事类型"
@@ -67,7 +63,6 @@ class EventType(models.Model):
 
 
 class Events(models.Model):
-
     class Meta:
         verbose_name = "赛事"
         verbose_name_plural = "赛事"
@@ -116,7 +111,6 @@ class EventTypeDetail(models.Model):
 
 
 class EventsDetail(models.Model):
-
     class Meta:
         verbose_name = "赛事详情"
         verbose_name_plural = "赛事详情"
@@ -138,6 +132,7 @@ class EventRules(models.Model):
     class Meta:
         verbose_name = "赛事规则"
         verbose_name_plural = "赛事规则"
+
     event = models.OneToOneField(
         Events, on_delete=models.CASCADE, primary_key=True)
     event_rules = RichTextField(verbose_name='规则', null=True, blank=True)
@@ -147,6 +142,7 @@ class EventTraffic(models.Model):
     class Meta:
         verbose_name = "赛事交通"
         verbose_name_plural = "赛事交通"
+
     event = models.OneToOneField(
         Events, on_delete=models.CASCADE, primary_key=True)
     event_traffic = RichTextField(verbose_name='赛事交通', null=True, blank=True)
@@ -163,7 +159,6 @@ class EventSc(models.Model):
 
 
 class HotVideo(models.Model):
-
     class Meta:
         verbose_name = "精彩视频"
         verbose_name_plural = "精彩视频"
@@ -173,7 +168,6 @@ class HotVideo(models.Model):
 
 
 class User(models.Model):
-
     class Meta:
         verbose_name = "用户信息"
         verbose_name_plural = "用户信息"
@@ -187,7 +181,7 @@ class User(models.Model):
     email = models.CharField(verbose_name='邮箱', max_length=100, unique=True)
     password = models.CharField(verbose_name='密码', max_length=50)
     is_email_check = models.IntegerField(verbose_name='邮箱是否验证', choices=[
-                                         [0, '未验证'], [1, '已发送邮件'], [2, '已验证']])
+        [0, '未验证'], [1, '已发送邮件'], [2, '已验证']])
     reg_date = models.DateTimeField(auto_now_add=True, verbose_name="注册时间")
 
     @staticmethod
@@ -239,13 +233,12 @@ class User(models.Model):
 
 
 class UserProfile(models.Model):
-
     class Meta:
         verbose_name = "用户详情"
         verbose_name_plural = "用户详情"
 
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True)
+        User, on_delete=models.CASCADE, related_name='users', primary_key=True)
     username = models.CharField(verbose_name='姓名', max_length=100)
     sex = models.CharField(max_length=20, null=True,
                            blank=True, verbose_name='性别')
@@ -264,6 +257,7 @@ class UserProfile(models.Model):
 
     paperwork_id = models.BigIntegerField(
         verbose_name='证件号', null=True, blank=True)
+
     # 待定
 
     def update(self, **kwagrs):
@@ -280,7 +274,6 @@ class UserProfile(models.Model):
 
 
 class ApplyUser(models.Model):
-
     class Meta:
         verbose_name = "报名列表"
         verbose_name_plural = "报名列表"
@@ -317,6 +310,7 @@ class ApplyUser(models.Model):
             '<img src="/static/admin/img/icon-{}.svg" alt="True">',
             status
         )
+
     checked_status.short_description = u"付费状态"
     get_apply_user.short_description = u'报名者邮箱'
     get_event_name.short_description = u'赛事名称'

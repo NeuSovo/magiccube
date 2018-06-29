@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from cms.models import *
 
 
 class SnippetSerializer(serializers.Serializer):
@@ -35,3 +36,19 @@ class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = test1
         fields = ['title', 'str']
+
+
+class UserProfileRecodeX(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['username', 'sex', 'country']
+
+
+class UserRecodeX(serializers.ModelSerializer):
+    users = UserProfileRecodeX(many=True, read_only=True)
+
+    # user = serializers.StringRelatedField(many=True) #跟着model_str_走?
+
+    class Meta:
+        model = User
+        fields = ['id', 'users']

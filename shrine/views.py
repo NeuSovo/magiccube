@@ -1,14 +1,14 @@
 from django.http import HttpResponse
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
-from .models import *
+
 from .serializers import *
+
 from rest_framework import mixins
 from rest_framework import generics
-from rest_framework.decorators import detail_route
-from django.views.decorators.csrf import csrf_exempt
-
+from rest_framework.decorators import *
+from rest_framework.response import Response
 from rest_framework import viewsets
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 
 
 class JSONResponse(HttpResponse):
@@ -67,20 +67,39 @@ def snippet_detail(request, pk):
         return HttpResponse(status=204)
 
 
-class MiddleSet(mixins.ListModelMixin, generics.GenericAPIView):
+# class MiddleSet(mixins.ListModelMixin, generics.GenericAPIView):
+class MiddleSet(generics.ListAPIView):
     queryset = test1.objects.all()
     serializer_class = TestSerializer
-
-    @detail_route(methods=['get'], url_path='gets')
-    def get(self, req, *args, **kwargs):
-        return self.list(req, *args, **kwargs)
 
 
 class TestViewSet(viewsets.ModelViewSet):
     queryset = test.objects.all()
     serializer_class = SnippetSerializer
 
+    # def list(self, request, *args, **kwargs):
+    #     return Response({'status': 'password set'})
+
 
 class Test1ViewSet(viewsets.ModelViewSet):
     queryset = test1.objects.all()
     serializer_class = TestSerializer
+
+
+class UserRecode(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserRecodeX
+
+    # @list_route(url_path='user')
+    # def get_user(self, request, pk=None):
+    #     def list(self, request, *args, **kwargs):
+    #         queryset = self.filter_queryset(self.get_queryset())
+    #
+    #         page = self.paginate_queryset(queryset)
+    #         if page is not None:
+    #             serializer = self.get_serializer(page, many=True)
+    #             return self.get_paginated_response(serializer.data)
+    #
+    #         serializer = self.get_serializer(queryset, many=True)
+    #         return Response(serializer.data)
+    #     return Response('user')

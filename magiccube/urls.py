@@ -15,11 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from shrine.router import DefaultRouter
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('cms.urls')),
-    path('test/', include('shrine.urls')),
-    path('router/', include(DefaultRouter.router.urls))
+    path('api_/', include('shrine.urls')),
 ]

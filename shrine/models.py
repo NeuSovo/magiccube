@@ -29,3 +29,6 @@ class test1(models.Model):
 
     class Meta:
         verbose_name_plural = '实验外键'
+
+
+
