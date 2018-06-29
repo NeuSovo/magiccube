@@ -26,10 +26,8 @@ class RecentEvent(MultipleJsonResponseMixin, ListView):
 
 class EventView(MultipleJsonResponseMixin, ListView):
     model = Events
-    query_set = Events.objects.all()
     paginate_by = 15
     datetime_type = 'string'
-    # foreign = True
     exclude_attr = ('event_year', 'event_year_id',
                     'event_province_id', 'event_project', 'event_project_id')
 

@@ -367,6 +367,9 @@ class UserParagraph(models.Model):
         verbose_name = "用户段位认证"
         verbose_name_plural = "用户段位认证"
 
+    def __str__(self):
+        return self.user.userprofile.username
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="用户")
     rz_date = models.DateTimeField(auto_now_add=True, verbose_name="认证时间")
     paragraph = models.CharField(max_length=100, verbose_name="段位")

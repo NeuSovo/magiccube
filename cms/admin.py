@@ -152,7 +152,10 @@ class ApplyUserAdmin(admin.ModelAdmin):
 admin.site.register(EventType)
 admin.site.register(EventProvince)
 admin.site.register(EventProject)
-# admin.site.register(EventYear)
+admin.site.register(UserParagraph)
+admin.site.register(RzgParagraph)
+admin.site.register(JlParagraph)
+
 
 admin.site.register(HotVideo)
 admin.site.site_header = '项目管理中心'
