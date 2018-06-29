@@ -1,5 +1,5 @@
 # magiccube
-
+[![Build Status](https://travis-ci.org/zxh326/magiccube.svg?branch=master)](https://travis-ci.org/zxh326/magiccube)
 ## Requirements
 ```bash
 pythom -m venv venv
@@ -20,6 +20,7 @@ pythom -m venv venv
 ```bash
 pip install coverage
 coverage run --source='.' --omit=venv/*,cms/migrations/*,*_init__.py manage.py test cms
+coverage report
 ```
 * run server
 * run celery
