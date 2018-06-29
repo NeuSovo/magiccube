@@ -19,12 +19,6 @@ class UserTestCase(TestCase):
         self.assertEqual(rep.status_code, 200)
         self.assertEqual(rep.json()['user_obj']['email'], 'test2@qq.com')
 
-    def test_send_email(self):
-        send_check_email(self.user)
-        self.assertEqual(self.user.is_email_check, 1)
-        self.user.is_email_check = 2
-        self.user.save()
-
     def test_login_user(self):
         c = Client()
         rep = c.post('/api/auth/login',
