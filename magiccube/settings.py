@@ -54,8 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "cms",
+    'simditor',
     'djcelery',
-    'simditor'
 ]
 
 MIDDLEWARE = [

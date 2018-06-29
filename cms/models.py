@@ -39,6 +39,7 @@ class EventProject(models.Model):
         return self.project
 
     project = models.CharField(verbose_name="项目", max_length=50)
+    project_detail = RichTextField(verbose_name='项目介绍', null=True, blank=True)
 
 
 class EventProvince(models.Model):
@@ -193,8 +194,6 @@ class User(models.Model):
     @staticmethod
     def is_exist_user(email):
         user = User.get_user_by_email(email)
-        print(user)
-        print(user is not None)
         return user is not None
 
     @staticmethod
@@ -346,7 +345,6 @@ class ApplyUser(models.Model):
         apply_.save()
 
         apply_types_list = []
-        print(apply_types)
         for i in apply_types:
             apply_types_list.append(ApplyUserTypes(
                 apply=apply_, apply_type=EventTypeDetail.objects.get(id=i)))

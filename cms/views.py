@@ -152,7 +152,7 @@ class RegUserView(FormJsonResponseMixin, CreateView):
             return self.render_to_response({'msg': '已注册', 'email_status': is_exist_user.is_email_check})
 
         user = User.reg_user(email=email, username=username, password=password)
-        send_check_email(user)
+        send_check_email.delay(uid=user.id, username=username, email=email)
         self.resp['user_obj'] = serializer(
             user, exclude_attr=('password', 'id', 'reg_date'))
         self.resp['msg'] = "已向邮箱 {} 发送一封确认邮件".format(email)

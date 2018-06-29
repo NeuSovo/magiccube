@@ -9,16 +9,14 @@ from .apps import email_check_template
 from .models import User
 
 @task
-def send_check_email(to_user, fail_silently=False):
+def send_check_email(uid, username, email, fail_silently=False):
     subject = 'test'
-    to_list = [to_user.email]
-    token = "http://127.0.0.1:8000/api/auth/checkemail?token="+gen_jwt(to_user.id, to_user.userprofile.username, 'checkemail')
-    html_content = email_check_template.format(username=to_user.userprofile.username, token=token)
+    to_list = [email]
+    token = "http://127.0.0.1:8000/api/auth/checkemail?token="+gen_jwt(uid, username, 'checkemail')
+    html_content = email_check_template.format(username=username, token=token)
     msg = EmailMessage(subject, html_content, None, to_list)
     msg.content_subtype = "html"
     msg.send(fail_silently)
-    to_user.is_email_check = 1
-    to_user.save()
 
 
 def parse_info(data, header=None, *args, **kwargs):

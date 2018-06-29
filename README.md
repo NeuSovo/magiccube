@@ -3,7 +3,6 @@
 ## Requirements
 ```bash
 pythom -m venv venv
-pip install -r requirements
 ```
 ## Usage
 * activate your venv
@@ -14,6 +13,8 @@ pip install -r requirements
     * Linux
 
         ```source venv/bin/activate```
+
+    ```pip install -r requirements```
 
 * run tests
 ```bash
