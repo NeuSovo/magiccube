@@ -149,13 +149,28 @@ class ApplyUserAdmin(admin.ModelAdmin):
     ]
 
 
+
+class ScoreTypesTypesAdmin(admin.TabularInline):
+    model = ScoreTypes
+
+
+@admin.register(UserScore)
+class UserScoreAdmin(admin.ModelAdmin):
+    '''
+        Admin View for UserScore
+    '''
+    list_display = ('cehck_in_time','user', 'event')
+    # list_filter = ('',)
+    inlines = [
+        ScoreTypesTypesAdmin,
+    ]
+
 admin.site.register(EventType)
 admin.site.register(EventProvince)
 admin.site.register(EventProject)
 admin.site.register(UserParagraph)
 admin.site.register(RzgParagraph)
 admin.site.register(JlParagraph)
-
 
 admin.site.register(HotVideo)
 admin.site.site_header = '项目管理中心'

@@ -25,5 +25,13 @@ urlpatterns = [
 
     path('paragraph/user/', UserParagraphView.as_view()),
     path('paragraph/rzg/', RzgParagraphView.as_view()),
-    path('paragraph/jl/', JlParagraphView.as_view())
+    path('paragraph/jl/', JlParagraphView.as_view()),
+
+    path('score/user/', UserScoreView.as_view()),
+    path('score/user/<str:user_id>', get_user_score_detail),
+    path('score/event/', EventsScoreView.as_view()),
+    path('score/event/<str:user_id>', EventsScoreDetailView.as_view()),
+    # path('score/rank/'),
+    # path('score/statistics/')
+
 ]

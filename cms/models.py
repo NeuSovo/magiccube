@@ -406,3 +406,25 @@ class JlParagraph(models.Model):
     country = models.CharField(max_length=50, verbose_name="地区")
     name = models.CharField(max_length=50, verbose_name="姓名")
     paragraph = models.CharField(max_length=100, verbose_name="级别")
+
+
+class UserScore(models.Model):
+
+    class Meta:
+        verbose_name = "用户成绩"
+        verbose_name_plural = "用户成绩"
+
+
+    cehck_in_time = models.DateTimeField(auto_now_add=True, verbose_name='登记时间')
+    user = models.ForeignKey(UserProfile, on_delete=models.SET(-1) )
+    event = models.ForeignKey(Events, on_delete=models.SET(-1))
+
+
+class ScoreTypes(models.Model):
+    class Meta:
+        verbose_name='成绩详情'
+        verbose_name='成绩详情'
+
+    detail = models.ForeignKey(UserScore, on_delete=models.CASCADE)
+    score_type = models.ForeignKey(EventType, on_delete=models.SET(-1), verbose_name='成绩类型')
+    score = models.DecimalField(max_digits=8,decimal_places=3, verbose_name='成绩')

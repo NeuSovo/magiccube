@@ -4,7 +4,7 @@ from dss.Serializer import serializer
 
 from django.http import Http404
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, FormView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, FormView, CreateView, UpdateView, View
 from django.db.models import Q
 
 from .models import *
@@ -244,6 +244,49 @@ class JlParagraphView(MultipleJsonResponseMixin, ListView):
         return queryset
 
 
+class UserScoreView(MultipleJsonResponseMixin, ListView):
+    model = UserProfile
+    paginate_by = 15
+    datetime_type = 'string'
+
+    exclude_attr = ('password','is_email_check', 'reg_date', 'rz_date', 'email', 'phone', 'paperwork_type', 'paperwork_id','event')
+
+
+# class UserScoreDetailView(JsonResponseMixin, View):
+#     model = UserScore
+#     pk_url_kwarg = 'user_id'
+#     foreign = True
+
+#     def get_queryset(self):
+#         if self.queryset is None:
+#             if self.model:
+#                 return self.model._default_manager.all()
+#             else:
+#                 raise ImproperlyConfigured(
+#                     "%(cls)s is missing a QuerySet. Define "
+#                     "%(cls)s.model, %(cls)s.queryset, or override "
+#                     "%(cls)s.get_queryset()." % {
+#                         'cls': self.__class__.__name__
+#                     }
+#                 )
+#         pk = self.kwargs.get('pk_url_kwarg')
+#         queryset =  self.queryset.all()
+#         if pk is not None:
+#             queryset = queryset.filter(user__id=pk)
+#         return queryset
+
+
+
+class EventsScoreView(MultipleJsonResponseMixin, ListView):
+    model = Events
+    paginate_by = 15
+    datetime_type = 'string'
+
+
+class EventsScoreDetailView(JsonResponseMixin, DetailView):
+    pass
+
+
 def check_email_view(request):
     res = dict()
     jwt_payload = request.GET.get('token')
@@ -327,3 +370,22 @@ def get_event_apply_user_view(request, event_id):
         })
     res['list'] = apply_list
     return parse_info(res, safe=True)
+
+
+def get_user_score_detail(request, user_id):
+    res = dict()
+    try:
+        user = User.objects.get(id=user_id)
+    except Exception as e:
+        raise Http404("user_id {} 错误".format(user_id))
+
+    queryset = UserScore.objects.filter(user=user.userprofile)
+    res['user_obj'] = serializer(user.userprofile, exclude_attr=('user', 'phone', 'paperwork_type', 'paperwork_id'))
+
+    score_detail = []
+
+    for i in queryset:
+        score_detail.append(serializer(i.scoretypes_set.all(), exclude_attr=('detail')))
+
+    res['score_detail'] = score_detail
+    return parse_info(res)
