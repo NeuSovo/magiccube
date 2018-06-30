@@ -1,13 +1,17 @@
 from django.http import HttpResponse
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
+
 from .serializers import *
 from .filters import *
+
+import django_filters.rest_framework
+
 from rest_framework import mixins
 from rest_framework import generics
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import *
+from rest_framework.response import Response
 from rest_framework import viewsets
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 
 
 class JSONResponse(HttpResponse):
@@ -66,22 +70,59 @@ def snippet_detail(request, pk):
         return HttpResponse(status=204)
 
 
-class MiddleSet(mixins.ListModelMixin, generics.GenericAPIView):
+# class MiddleSet(mixins.ListModelMixin, generics.GenericAPIView):
+class MiddleSet(generics.ListAPIView):
     queryset = test1.objects.all()
     serializer_class = TestSerializer
-
-    @detail_route(methods=['get'], url_path='gets')
-    def get(self, req, *args, **kwargs):
-        return self.list(req, *args, **kwargs)
 
 
 class TestViewSet(viewsets.ModelViewSet):
     queryset = test.objects.all()
     serializer_class = SnippetSerializer
-    # filter_backends = (DjangoFilterBackend)
-    # filter_fields = ('title',)
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filter_class = TestFilter
+
+    # def list(self, request, *args, **kwargs):
+    #     return Response({'status': 'password set'})
 
 
 class Test1ViewSet(viewsets.ModelViewSet):
     queryset = test1.objects.all()
     serializer_class = TestSerializer
+
+
+class UserRecode(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserRecodeX
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filter_class = UserFilter
+
+    # def get_queryset(self):
+    #     queryset = User.objects.all()
+    #     username = self.request.query_params.get('name', None)
+    #     area = self.request.query_params.get('area', None)
+    #     sex = self.request.query_params.get('sex', None)
+    #     if username or area or sex is not None:
+    #         queryset = queryset.filter(purchaser__username=username)
+    #     return queryset
+
+    # @list_route(url_path='user')
+    # def get_user(self, request, pk=None):
+    #     def list(self, request, *args, **kwargs):
+    #         queryset = self.filter_queryset(self.get_queryset())
+    #
+    #         page = self.paginate_queryset(queryset)
+    #         if page is not None:
+    #             serializer = self.get_serializer(page, many=True)
+    #             return self.get_paginated_response(serializer.data)
+    #
+    #         serializer = self.get_serializer(queryset, many=True)
+    #         return Response(serializer.data)
+    #     return Response('user')
+
+
+class ContestRecode(viewsets.ReadOnlyModelViewSet):
+    queryset = Events.objects.all()
+    serializer_class = ContestRecodeX
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filter_class = ContestFilter

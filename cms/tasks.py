@@ -12,7 +12,8 @@ from .models import User
 def send_check_email(to_user, fail_silently=False):
     subject = 'test'
     to_list = [to_user.email]
-    html_content = email_check_template.format(username=to_user.userprofile.username, token="http://127.0.0.1:8000/api/auth/checkemail?token="+gen_jwt(to_user.id, to_user.userprofile.username, 'checkemail'))
+    token = "http://127.0.0.1:8000/api/auth/checkemail?token="+gen_jwt(to_user.id, to_user.userprofile.username, 'checkemail')
+    html_content = email_check_template.format(username=to_user.userprofile.username, token=token)
     msg = EmailMessage(subject, html_content, None, to_list)
     msg.content_subtype = "html"
     msg.send(fail_silently)
@@ -20,24 +21,13 @@ def send_check_email(to_user, fail_silently=False):
     to_user.save()
 
 
-def handle_req_body(func):
-    def wrapper(*args, **kwargs):
-        request = args[0]
-        try:
-            body = json.loads(request.body)
-        except Exception as e:
-            return {'msg': 'error'}
-        return func(*args, **kwargs, body=body)
-    return wrapper
-
-
-def parse_info(data, header=None):
+def parse_info(data, header=None, *args, **kwargs):
     """
     parser_info:
     param must be a dict
     parse dict data to json,and return HttpResponse
     """
-    response = JsonResponse(data)
+    response = JsonResponse(data, *args, **kwargs)
     if header:
         response.set_cookie('access_token', header['access_token'])
     return response
