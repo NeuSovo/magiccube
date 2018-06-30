@@ -149,21 +149,12 @@ class ApplyUserAdmin(admin.ModelAdmin):
     ]
 
 
-
-class ScoreTypesTypesAdmin(admin.TabularInline):
-    model = ScoreTypes
-
-
 @admin.register(UserScore)
 class UserScoreAdmin(admin.ModelAdmin):
     '''
         Admin View for UserScore
     '''
-    list_display = ('cehck_in_time','user', 'event')
-    # list_filter = ('',)
-    inlines = [
-        ScoreTypesTypesAdmin,
-    ]
+    list_display = ('user', 'event')
 
 admin.site.register(EventType)
 admin.site.register(EventProvince)

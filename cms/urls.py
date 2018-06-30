@@ -30,8 +30,8 @@ urlpatterns = [
     path('score/user/', UserScoreView.as_view()),
     path('score/user/<str:user_id>', get_user_score_detail),
     path('score/event/', EventsScoreView.as_view()),
-    path('score/event/<str:user_id>', EventsScoreDetailView.as_view()),
-    # path('score/rank/'),
+    # path('score/event/<str:user_id>', EventsScoreDetailView.as_view()),
+    path('score/rank/', get_score_rank_view),
     # path('score/statistics/')
 
 ]

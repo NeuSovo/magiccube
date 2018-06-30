@@ -28,7 +28,7 @@ class RecentEvent(MultipleJsonResponseMixin, ListView):
 class HotVideoListView(MultipleJsonResponseMixin, ListView):
     model = HotVideo
     query_set = HotVideo.objects.all()[:15]
-    paginate_by = 15
+    paginate_by = 3
     datetime_type = 'string'
 
 
@@ -252,39 +252,25 @@ class UserScoreView(MultipleJsonResponseMixin, ListView):
     exclude_attr = ('password','is_email_check', 'reg_date', 'rz_date', 'email', 'phone', 'paperwork_type', 'paperwork_id','event')
 
 
-# class UserScoreDetailView(JsonResponseMixin, View):
-#     model = UserScore
-#     pk_url_kwarg = 'user_id'
-#     foreign = True
-
-#     def get_queryset(self):
-#         if self.queryset is None:
-#             if self.model:
-#                 return self.model._default_manager.all()
-#             else:
-#                 raise ImproperlyConfigured(
-#                     "%(cls)s is missing a QuerySet. Define "
-#                     "%(cls)s.model, %(cls)s.queryset, or override "
-#                     "%(cls)s.get_queryset()." % {
-#                         'cls': self.__class__.__name__
-#                     }
-#                 )
-#         pk = self.kwargs.get('pk_url_kwarg')
-#         queryset =  self.queryset.all()
-#         if pk is not None:
-#             queryset = queryset.filter(user__id=pk)
-#         return queryset
-
-
-
 class EventsScoreView(MultipleJsonResponseMixin, ListView):
     model = Events
     paginate_by = 15
     datetime_type = 'string'
 
 
-class EventsScoreDetailView(JsonResponseMixin, DetailView):
-    pass
+class ScoreRankView(MultipleJsonResponseMixin, ListView):
+    model = UserScore
+    paginate_by = 20
+    datetime_type = 'string'
+    exclude_attr = ('detail_id', 'id', 'password','is_email_check', 'reg_date', 'rz_date', 'email', 'phone', 'paperwork_type', 'paperwork_id')
+
+    def get_queryset(self):
+        queryset = super(ScoreRankView, self).get_queryset()
+        # queryset = queryset.filter(score_type__id = 1).order_by('-score')
+        queryset = queryset.raw('select 1 as id, user_id,avg(score) from cms_userscore where score_type_id = 1 group by user_id order by avg(score)')
+        print (queryset)
+        return list(queryset)
+
 
 
 def check_email_view(request):
@@ -389,3 +375,44 @@ def get_user_score_detail(request, user_id):
 
     res['score_detail'] = score_detail
     return parse_info(res)
+
+
+def get_event_score_detail(request, event_id):
+    res = dict()
+    try:
+        event = Events.objects.get(id=event_id)
+    except Exception as e:
+        raise Http404("event_id {} 错误".format(event_id))
+
+
+
+def get_score_rank_view(request):
+    res = dict()
+    type_id = request.GET.get('type', 1)
+    page = request.GET.get('page', 1)
+    raw = 'select 1 as id, user_id,avg(score) from cms_userscore where score_type_id = {} group by user_id order by avg(score)'.format(type_id)
+
+    queryset = UserScore.objects.raw(raw)
+
+    res['page_obj'] = get_page_obj(len(list(queryset)), int(page), 1)
+    res['is_paginated'] = True if res['page_obj'] else False
+    res['scorerank_list'] = serializer(list(queryset), exclude_attr=('user', 'score'))
+    return parse_info(res, safe=False)
+
+
+def get_page_obj(_len, current, paginate_by):
+    total = _len // paginate_by
+    if total > 1:
+        total = total + 1 if _len % paginate_by else total
+        current = 1 if current > total else current
+        previous = current -1  if current - 1 else current
+        _next = current if current + 1 > total else current + 1
+        page_range = [{'page': i} for i in range(1, total +1)]
+        return {
+            'current': current,
+            'total': total,
+            'previous': previous,
+            'next': _next,
+            'page_range': page_range
+        }
+    return {}
