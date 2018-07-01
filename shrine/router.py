@@ -6,7 +6,5 @@ from rest_framework.routers import DefaultRouter
 
 class DefaultRouter:
     router = DefaultRouter()
-    router.register('test', TestViewSet, base_name='nageshiurl')
-    router.register('test1', Test1ViewSet)
     router.register('user', UserRecode)
     router.register('contest', ContestRecode)

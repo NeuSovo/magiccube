@@ -4,13 +4,6 @@ from .models import *
 from cms.models import *
 
 
-class TestFilter(Set):
-    min_id = django_filters.NumberFilter(name='id', lookup_expr='gte')
-    max_id = django_filters.NumberFilter(name='id', lookup_expr='lte')
-
-    class Meta:
-        model = test
-        fields = ['title', 'code', 'min_id', 'max_id']
 
 
 class UserFilter(Set):
