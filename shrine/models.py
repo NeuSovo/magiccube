@@ -23,35 +23,66 @@ class test(models.Model):
 
     class Meta:
         ordering = ('created',)
+        verbose_name_plural = '根'
+
+
+class test0(models.Model):
+    lists = models.CharField(choices=STYLE_CHOICES, default='friend', max_length=100)
+    str = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.lists
+
+    class Meta:
+        verbose_name_plural = '根0'
+
+
+class test00(models.Model):
+    lists = models.CharField(choices=STYLE_CHOICES, default='friend', max_length=100)
+    str = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.lists
+
+    class Meta:
+        verbose_name_plural = '根00'
+
+
+class test000(models.Model):
+    lists = models.ForeignKey(test00, on_delete=models.CASCADE)
+    str = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.lists
+
+    class Meta:
+        verbose_name_plural = '根000'
 
 
 class test1(models.Model):
     title = models.ForeignKey(test, on_delete=models.CASCADE)
+    list = models.OneToOneField(test0, on_delete=models.CASCADE, default='friend')
+    list0 = models.ManyToManyField(test00, default='')
+    list00 = models.ForeignKey(test000, default='', on_delete=models.CASCADE)
     str = models.CharField(max_length=100, blank=True)
 
     class Meta:
-        verbose_name_plural = '实验外键'
+        verbose_name_plural = '实验'
 
 
 class Authority(models.Model):
-    TRUN = (
-        (0, '决赛'),
-        (1, '半决赛'),
-        (2, '初赛'),
-        (3, '复赛'),
-        (4, '组合制决赛'),
-        (6, '组合制初赛'),
-    )
+    TRUN = ((0, '决赛'), (1, '半决赛'), (2, '初赛'), (3, '复赛'), (4, '组合制决赛'), (6, '组合制初赛'),)
 
-    username = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    events = models.ForeignKey(Events, on_delete=models.CASCADE)
-    eventType = models.ForeignKey(EventType, on_delete=models.CASCADE)
+    username = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='users', verbose_name='用户')
+    events = models.ForeignKey(Events, on_delete=models.CASCADE, verbose_name='赛事')
+    eventType = models.ForeignKey(EventType, on_delete=models.CASCADE, verbose_name='类型')
     # single=models.DecimalField(verbose_name='单次',max_digits=5,decimal_places=2)
-    single = models.TimeField(verbose_name='单次', default='0')
-    average = models.TimeField(verbose_name='平均', default='0')
+    # single = models.TimeField(verbose_name='单次', default='0')
+    # average = models.TimeField(verbose_name='平均', default='0')
+    single = models.CharField(verbose_name='单次', max_length=10, default='0')
+    average = models.CharField(verbose_name='平均', max_length=10, default='0')
     detail = models.CharField(verbose_name='详情', max_length=50, blank=True)
     turn = models.SmallIntegerField(verbose_name='轮次', choices=TRUN, default=0)
 
     class Meta:
-        verbose_name_plural = '官方记录'
-        ordering = ('username',)
+        verbose_name_plural = '官方记录'  # ordering = ('username',)
