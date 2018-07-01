@@ -12,7 +12,7 @@ from .models import User
 def send_check_email(uid, username, email, fail_silently=False):
     subject = 'test'
     to_list = [email]
-    token = "http://127.0.0.1:8000/api/auth/checkemail?token="+gen_jwt(uid, username, 'checkemail')
+    token = "https://lab.zxh326.cn/api/auth/checkemail?token="+gen_jwt(uid, username, 'checkemail')
     html_content = email_check_template.format(username=username, token=token)
     msg = EmailMessage(subject, html_content, None, to_list)
     msg.content_subtype = "html"
@@ -54,7 +54,7 @@ class CheckToken(object):
     user = None
 
     def get_current_token(self):
-        self.token = self.request.POST.get('access_token', '') or self.request.COOKIES.get('access_token',)
+        self.token = self.request.META.get('HTTP_AUTHORIZATION', '') or self.request.COOKIES.get('access_token',)
         return self.token
 
     def check_token(self):

@@ -187,7 +187,7 @@ class User(models.Model):
         return self.userprofile.username
 
     email = models.CharField(verbose_name='邮箱', max_length=100, unique=True)
-    password = models.CharField(verbose_name='密码', max_length=50)
+    password = models.TextField(verbose_name='密码')
     is_email_check = models.IntegerField(verbose_name='邮箱是否验证', choices=[
                                          [0, '未验证'], [1, '已发送邮件'], [2, '已验证']])
     reg_date = models.DateTimeField(auto_now_add=True, verbose_name="注册时间")
