@@ -17,6 +17,7 @@ class UserAdmin(admin.ModelAdmin):
     inlines = [
         UserProfileAdmin,
     ]
+
     # readonly_fields = ('password',)
 
     def save_model(self, request, obj, form, change):
@@ -129,11 +130,14 @@ class ApplyUserAdmin(admin.ModelAdmin):
                 writer.writerow(row)
 
             return response
+
         export_as_csv.short_description = description
         return export_as_csv
 
     # SaveExecl.short_description = "导出excel"
-    actions = [export_as_csv_action("导出excel", fields=[ 'create_time', 'apply_user', 'get_event_name', 'total_price', 'remarks', 'get_apply_types', 'get_apply_status'], 
+    actions = [export_as_csv_action("导出excel",
+                                    fields=['create_time', 'apply_user', 'get_event_name', 'total_price', 'remarks',
+                                            'get_apply_types', 'get_apply_status'],
                                     header=['报名时间', '报名者邮箱', '报名赛事', '总价', '留言', '报名赛事' '是否缴费'])]
 
     list_display = ('create_time', 'get_apply_user', 'get_event_name',
@@ -147,6 +151,25 @@ class ApplyUserAdmin(admin.ModelAdmin):
     inlines = [
         AppplyUserTypesAdmin,
     ]
+
+
+@admin.register(Authority)
+class AuthorityAdmin(admin.ModelAdmin):
+    list_display = ['user_', 'events_', 'event_type', 'turn', 'single', 'recent']
+
+    def user_(self, obj):
+        return obj.username.username
+
+    def events_(self, obj):
+        return obj.events.name
+
+    def event_type(self, obj):
+        return obj.eventType.type
+
+
+    user_.short_description = '用户'
+    events_.short_description = '赛事'
+    event_type.short_description = '类型'
 
 
 admin.site.register(EventType)

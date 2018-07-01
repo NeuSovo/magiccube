@@ -176,7 +176,7 @@ class User(models.Model):
         return self.email
 
     def username(self):
-        return self.userprofile.username
+        return self.users.username
 
     email = models.CharField(verbose_name='邮箱', max_length=100, unique=True)
     password = models.CharField(verbose_name='密码', max_length=50)
@@ -359,3 +359,18 @@ class ApplyUserTypes(models.Model):
 
     apply = models.ForeignKey(ApplyUser, on_delete=models.CASCADE)
     apply_type = models.ForeignKey(EventTypeDetail, on_delete=models.SET(-1))
+
+
+class Authority(models.Model):
+    TRUN = ((0, '决赛'), (1, '半决赛'), (2, '初赛'), (3, '复赛'), (4, '组合制决赛'), (6, '组合制初赛'),)
+    Award = ((0, '否'), (1, '金'), (2, '银'), (3, '铜'))
+    username = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name='用户')
+    events = models.ForeignKey(Events, on_delete=models.CASCADE, related_name='events', verbose_name='赛事')
+    eventType = models.ForeignKey(EventType, on_delete=models.CASCADE, related_name='eventType', verbose_name='类型')
+    single = models.CharField(verbose_name='单次成绩', max_length=10, default='0')
+    turn = models.SmallIntegerField(verbose_name='轮次', choices=TRUN, default=0)
+    recent = models.DateField(verbose_name='参加时间', auto_now_add=True)
+    award = models.SmallIntegerField(verbose_name='是否获奖', choices=Award, default=0)
+
+    class Meta:
+        verbose_name_plural = '官方成绩'  # ordering = ('username',)
