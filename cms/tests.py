@@ -140,7 +140,7 @@ class EventsTests(TestCase):
 
     def test_get_event_all_fliter(self):
         c = Client()
-        rep = c.get('/api/event/getfilter')
+        rep = c.get('/api/event/getfilter/')
         self.assertEqual(rep.status_code, 200)
 
     def test_get_event_detail(self):
@@ -220,12 +220,12 @@ class ApplyTestCase(TestCase):
             'types': self.events_type_id
         }
 
-        rep = self.c.post('/api/event/apply', data)
+        rep = self.c.post('/api/event/apply/', data)
         self.assertEqual(rep.status_code, 200)
         self.assertContains(rep, 'apply_id')
 
         # re apply
-        rep = self.c.post('/api/event/apply', data)
+        rep = self.c.post('/api/event/apply/', data)
         self.assertEqual(rep.status_code, 200)
         self.assertContains(rep, 'msg')
 
