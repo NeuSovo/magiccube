@@ -8,3 +8,4 @@ class DefaultRouter:
     router = DefaultRouter()
     router.register('user', UserRecode)
     router.register('contest', ContestRecode)
+    router.register('rank', RankRecode)

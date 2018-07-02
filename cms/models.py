@@ -367,10 +367,34 @@ class Authority(models.Model):
     username = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name='用户')
     events = models.ForeignKey(Events, on_delete=models.CASCADE, related_name='events', verbose_name='赛事')
     eventType = models.ForeignKey(EventType, on_delete=models.CASCADE, related_name='eventType', verbose_name='类型')
-    single = models.CharField(verbose_name='单次成绩', max_length=10, default='0')
+    single = models.DecimalField(verbose_name='单次成绩', max_digits=5, decimal_places=2)
     turn = models.SmallIntegerField(verbose_name='轮次', choices=TRUN, default=0)
     recent = models.DateField(verbose_name='参加时间', auto_now_add=True)
     award = models.SmallIntegerField(verbose_name='是否获奖', choices=Award, default=0)
 
+    def username_str(self):
+        return self.username.username
+
+    def events_str(self):
+        return self.events.name
+
+    def eventType_str(self):
+        return self.eventType.type
+
+    def __str__(self):
+        return '{}'.format(self.username)
+
+
     class Meta:
         verbose_name_plural = '官方成绩'  # ordering = ('username',)
+
+
+# class UserHistory(models.Model):
+#     name = models.ForeignKey(Authority, on_delete=models.CASCADE)
+#     detail = models.CharField(max_length=100, default='')
+#     join = models.SmallIntegerField(default=0)
+#     average = models.DecimalField(max_digits=5, decimal_places=2)
+#     count = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+#
+#     class Meta:
+#         verbose_name_plural = '用户参赛记录'
