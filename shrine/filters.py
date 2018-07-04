@@ -5,9 +5,10 @@ from cms.models import *
 
 
 class UserFilter(Set):
-    name = django_filters.CharFilter(name="users__username")
-    sex = django_filters.CharFilter(name="users__sex")
-    area = django_filters.CharFilter(name="users__country")
+    name = django_filters.CharFilter(name="userprofile__username", lookup_expr='icontains')
+    sex = django_filters.CharFilter(name="userprofile__sex")
+    area = django_filters.CharFilter(name="userprofile__country")
+    id = django_filters.Filter(name='id', lookup_expr='contains')
 
     class Meta:
         model = User
@@ -15,9 +16,13 @@ class UserFilter(Set):
 
 
 class ContestFilter(Set):
+    eventType = django_filters.CharFilter(name="eventtypedetail__type__type")
+    name = django_filters.CharFilter(name='name', lookup_expr='icontains')
+    location = django_filters.CharFilter(name='location', lookup_expr='icontains')
+
     class Meta:
         model = Events
-        fields = ['event_date','country',  'event_project__project']
+        fields = ['event_date', 'country', 'eventType', 'name', 'location']
 
 
 class RankFilter(Set):

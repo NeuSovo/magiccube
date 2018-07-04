@@ -10,13 +10,13 @@ class UserProfileRecodeX(serializers.ModelSerializer):
 
 
 class UserRecodeX(serializers.ModelSerializer):
-    users = UserProfileRecodeX(read_only=True)  # many=True 是一对多 而这个是一对一关系 哎呀
+    userprofile = UserProfileRecodeX(read_only=True)  # many=True 是一对多 而这个是一对一关系 哎呀
 
     # users = serializers.StringRelatedField(read_only=True) #跟着model_str_走?
 
     class Meta:
         model = User
-        fields = ['id', 'users']
+        fields = ['id', 'userprofile']
 
 
 class ContestRecodeX(serializers.ModelSerializer):
@@ -28,6 +28,4 @@ class ContestRecodeX(serializers.ModelSerializer):
 class RankRecodeX(serializers.ModelSerializer):
     class Meta:
         model = Authority
-        fields = ['username_str', 'events_str', 'eventType_str', 'single',
-                  'turn',
-                  'recent', 'award']
+        fields = ['username_str', 'events_str', 'eventType_str', 'single', 'turn', 'recent', 'award']

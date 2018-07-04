@@ -15,7 +15,7 @@ from rest_framework.parsers import JSONParser
 
 
 class UserRecode(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.get_queryset().order_by('id')
     serializer_class = UserRecodeX
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filter_class = UserFilter
@@ -23,7 +23,7 @@ class UserRecode(viewsets.ReadOnlyModelViewSet):
 
 
 class ContestRecode(viewsets.ReadOnlyModelViewSet):
-    queryset = Events.objects.all()
+    queryset = Events.objects.get_queryset().order_by('event_date')
     serializer_class = ContestRecodeX
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filter_class = ContestFilter
@@ -31,7 +31,7 @@ class ContestRecode(viewsets.ReadOnlyModelViewSet):
 
 
 class RankRecode(viewsets.ReadOnlyModelViewSet):
-    queryset = Authority.objects.all().order_by('single')
+    queryset = Authority.objects.get_queryset().order_by('single')
     serializer_class = RankRecodeX
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filter_class = RankFilter
@@ -57,7 +57,7 @@ class RankRecode(viewsets.ReadOnlyModelViewSet):
     @renderer_classes((JSONRenderer,))
     def average(self, request):
         area = request.query_params.get('area', None)
-        NULL = {'msg': 'not data'}
+        NULL = {'msg': '麻烦带上区域'}
         if (area):
             return (self.authority(area))
         return Response(NULL)
