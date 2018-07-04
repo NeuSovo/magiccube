@@ -204,7 +204,7 @@ class UserParagraphView(MultipleJsonResponseMixin, ListView):
     paginate_by = 15
     datetime_type = 'string'
 
-    exclude_attr = ('password','is_email_check', 'reg_date', 'rz_date', 'email', 'phone', 'paperwork_type', 'paperwork_id')
+    exclude_attr = ('user', 'userinfo_id', 'password','is_email_check', 'reg_date', 'rz_date', 'email', 'phone', 'paperwork_type', 'paperwork_id')
 
 
     def get_queryset(self):

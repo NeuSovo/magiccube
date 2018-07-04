@@ -370,16 +370,16 @@ class UserParagraph(models.Model):
     class Meta:
         verbose_name = "用户段位认证"
         verbose_name_plural = "用户段位认证"
-        ordering = ['user']
+        ordering = ['userinfo']
 
     def __str__(self):
-        return self.user.username
+        return self.userinfo.username
 
     @property
     def username(self):
-        return self.user.username
+        return self.userinfo.username
     
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="用户")
+    userinfo = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="用户")
     rz_date = models.DateTimeField(auto_now_add=True, verbose_name="认证时间")
     paragraph = models.CharField(max_length=100, verbose_name="段位")
 
