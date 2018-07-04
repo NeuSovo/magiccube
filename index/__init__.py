@@ -9,4 +9,4 @@ def get_current_app_name(_file):
 
 class IndexConfig(AppConfig):
     name = get_current_app_name(__file__)
-    verbose_name=u'a首页'
+    verbose_name=u'首页'

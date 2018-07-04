@@ -9,3 +9,4 @@ celery-with-redis
 django-simditor
 djangorestframework
 django-filter
+django-cors-headers

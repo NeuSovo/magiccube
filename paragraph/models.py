@@ -26,6 +26,9 @@ class RzgParagraph(models.Model):
         verbose_name_plural = "认证官"
         ordering = ['name']
 
+    def __str__(self):
+        return self.name
+
     country = models.CharField(max_length=50, verbose_name="地区")
     name = models.CharField(max_length=50, verbose_name="姓名")
     sex = models.CharField(max_length=50, verbose_name="性别")
@@ -38,6 +41,9 @@ class JlParagraph(models.Model):
         verbose_name = "教练证书"
         verbose_name_plural = "教练证书"
         ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
     country = models.CharField(max_length=50, verbose_name="地区")
     name = models.CharField(max_length=50, verbose_name="姓名")
