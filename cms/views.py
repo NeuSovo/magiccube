@@ -169,10 +169,11 @@ class LoginView(FormJsonResponseMixin, FormView):
             return self.render_to_response({'msg': '账号或密码错误'})
 
         access_token = gen_jwt(
-            user_id=user.id, user_email=user.email, do="token", exp_hours=72)
+            user_id=user.id, user_email=user.email, do="token", exp_hours=24 * 7)
         self.resp['profile'] = serializer(
             user.userprofile, exclude_attr=('password', 'id', 'reg_date'))
         self.resp['access_token'] = access_token
+        self.resp['expires_in'] = 3600 * 24 * 7
 
         response = self.render_to_response(self.resp)
         response.set_cookie('access_token', access_token)
