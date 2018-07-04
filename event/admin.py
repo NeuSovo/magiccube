@@ -1,52 +1,8 @@
-from django.contrib import admin
-from django.contrib.auth.hashers import make_password
-from django.http import HttpResponse
-from .models import *
 import csv
 import codecs
-
-
-class UserProfileAdmin(admin.StackedInline):
-    model = UserProfile
-    can_delete = False
-
-
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'username')
-    inlines = [
-        UserProfileAdmin,
-    ]
-    # readonly_fields = ('password',)
-
-    def save_model(self, request, obj, form, change):
-        password = request.POST['password'][0]
-        password = make_password(password)
-        obj.password = password
-        obj.save()
-
-
-@admin.register(News)
-class NewsAdmin(admin.ModelAdmin):
-    '''
-        Admin View for News
-    '''
-    list_display = ('title', 'create_user', 'create_time', 'is_top')
-    list_filter = ('is_top',)
-    # inlines = [
-    #     Inline,
-    # ]
-    # raw_id_fields = ('',)
-    readonly_fields = ('create_user', 'create_time')
-    # search_fields = ('',)
-    list_editable = ('is_top',)
-
-    def save_model(self, request, obj, form, change):
-        """
-        Given a model instance save it to the database.
-        """
-        obj.create_user = request.user.username
-        obj.save()
+from django.contrib import admin
+from .models import *
+# Register your models here.
 
 
 class EventsRulesAdmin(admin.StackedInline):
@@ -152,11 +108,7 @@ class ApplyUserAdmin(admin.ModelAdmin):
 admin.site.register(EventType)
 admin.site.register(EventProvince)
 admin.site.register(EventProject)
-admin.site.register(UserParagraph)
-admin.site.register(RzgParagraph)
-admin.site.register(JlParagraph)
 
 
-admin.site.register(HotVideo)
 admin.site.site_header = '项目管理中心'
 admin.site.site_title = '项目管理中心'

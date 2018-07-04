@@ -1,8 +1,9 @@
 from django.apps import AppConfig
 
 
-class CmsConfig(AppConfig):
-    name = 'cms'
+class AuthConfig(AppConfig):
+    name = 'utils'
+
 
 email_check_template = '''
       <table align="center"  cellpadding="0"  cellspacing="0"  style="border-collapse: collapse; border:1px solid #e5e5e5;box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);text-align: left; width:800px;">
