@@ -83,6 +83,16 @@ class ApplyUserAdmin(admin.ModelAdmin):
         export_as_csv.short_description = description
         return export_as_csv
 
+    def save_model(self, request, obj, form, change):
+        if change:
+            obj.save()
+        else:
+            import uuid
+            uuid = str(uuid.uuid1())
+            obj.apply_id = uuid
+            obj.save()
+
+
     # SaveExecl.short_description = "导出excel"
     actions = [export_as_csv_action("导出excel",
                                     fields=['create_time', 'apply_user', 'get_event_name', 'total_price', 'remarks',
