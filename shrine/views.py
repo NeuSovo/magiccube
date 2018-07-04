@@ -19,6 +19,7 @@ class UserRecode(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserRecodeX
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filter_class = UserFilter
+    pagination_class = CommonPagination
 
 
 class ContestRecode(viewsets.ReadOnlyModelViewSet):
@@ -26,31 +27,37 @@ class ContestRecode(viewsets.ReadOnlyModelViewSet):
     serializer_class = ContestRecodeX
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filter_class = ContestFilter
+    pagination_class = CommonPagination
 
-
-# class RankRecode(mixins.ListModelMixin, generics.GenericAPIView):
-#     def get(self, request, *args, **kwargs):
-#         return self.list(request, *args, **kwargs)
 
 class RankRecode(viewsets.ReadOnlyModelViewSet):
     queryset = Authority.objects.all().order_by('single')
     serializer_class = RankRecodeX
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filter_class = RankFilter
+    pagination_class = CommonPagination
 
     def get_queryset(self):
         queryset = Authority.objects.all().order_by('single')
         type = self.request.query_params
         return queryset
 
-    @list_route(url_path='average')
+    def authority(self, area):
+        type = EventType.objects.all()
+        list = []
+        for i in type:
+            exists = Authority.objects.filter(eventType__type=i, events__country=area).exists()
+            data = Authority.objects.filter(eventType__type=i, events__country=area).order_by('single').first()
+            if (exists):
+                serializer = RankRecodeX(data)
+                list.append(serializer.data)
+        return Response(list)
+
+    @list_route(url_path='authority')
+    @renderer_classes((JSONRenderer,))
     def average(self, request):
-        pram = request.query_params
-        if (pram['area']):
-            queryset = Authority.objects.filter(username__username=pram['name'], events__country=pram['area'],
-                                                events__name=pram['events']).order_by('single')
-            serializer = self.get_serializer(queryset, many=True)
-            return Response(serializer.data)
-        return Response('凉了,这个不会写')
-class AuthorityRecode(viewsets.ReadOnlyModelViewSet):
-    queryset = queryset = Authority.objects.all().order_by('single')
+        area = request.query_params.get('area', None)
+        NULL = {'msg': 'not data'}
+        if (area):
+            return (self.authority(area))
+        return Response(NULL)

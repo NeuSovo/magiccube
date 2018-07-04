@@ -93,6 +93,9 @@ class Events(models.Model):
     event_project = models.ForeignKey(
         EventProject, on_delete=models.SET(-1), verbose_name='赛事项目')
 
+    def eventProvince(self):
+        return self.event_province.province
+
 
 class EventTypeDetail(models.Model):
     class Meta:
@@ -384,10 +387,8 @@ class Authority(models.Model):
     def __str__(self):
         return '{}'.format(self.username)
 
-
     class Meta:
         verbose_name_plural = '官方成绩'  # ordering = ('username',)
-
 
 # class UserHistory(models.Model):
 #     name = models.ForeignKey(Authority, on_delete=models.CASCADE)

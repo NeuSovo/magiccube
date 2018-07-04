@@ -22,7 +22,7 @@ class UserRecodeX(serializers.ModelSerializer):
 class ContestRecodeX(serializers.ModelSerializer):
     class Meta:
         model = Events
-        fields = ['event_date', 'name', 'location', 'country', 'event_province', 'evnet_weight']
+        fields = ['event_date', 'name', 'location', 'country', 'eventProvince', 'evnet_weight']
 
 
 class RankRecodeX(serializers.ModelSerializer):
