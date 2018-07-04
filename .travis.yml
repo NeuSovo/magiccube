@@ -7,6 +7,5 @@ install:
   - pip install -r requirements.txt
   - pip install coverage
 script:
-  - python manage.py test cms
-  - coverage run --source='.' --omit=venv/*,cms/migrations/*,*_init__.py manage.py test cms
+  - coverage run --source='.' --omit=venv/*,*/migrations/*,*_init__.py manage.py test
   - coverage report

@@ -53,9 +53,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "cms",
+    # 'djcelery',
+    'index',
+    'utils',
+    'event',
+    'paragraph',
     'simditor',
-    'djcelery',
 ]
 
 MIDDLEWARE = [
