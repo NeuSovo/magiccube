@@ -7,3 +7,5 @@ PyJWT
 django-celery
 celery-with-redis
 django-simditor
+djangorestframework
+django-filter

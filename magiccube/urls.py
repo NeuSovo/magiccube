@@ -22,5 +22,6 @@ urlpatterns = [
     path('api/', include('utils.urls')),
     path('api/index/', include('index.urls')),
     path('api/event/', include('event.urls')),
-    path('api/paragraph/', include('paragraph.urls'))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('api/paragraph/', include('paragraph.urls')),
+    path('api/', include('shrine.urls')),
+]
