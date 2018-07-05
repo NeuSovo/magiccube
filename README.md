@@ -19,7 +19,7 @@ pythom -m venv venv
 * run tests
 ```bash
 pip install coverage
-coverage run --source='.' --omit=venv/*,cms/migrations/*,*_init__.py manage.py test cms
+coverage run --source='.' --omit=venv/*,*/migrations/*,*_init__.py manage.py test
 coverage report
 ```
 * run server
