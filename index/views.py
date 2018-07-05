@@ -35,7 +35,8 @@ def get_join_our(request):
 
 
 def get_lunbo_img(request):
-    count = request.GET.get('count', 3)
+    count = request.GET.get('count')
+    count = int(count) if count else 3
     lists = LunBo.objects.all()[:count]
     if lists:
         return parse_info({'list': serializer(lists)})
