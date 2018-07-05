@@ -24,5 +24,6 @@ class NewsAdmin(admin.ModelAdmin):
         obj.create_user = request.user.username
         obj.save()
 
-
+admin.site.register(JoinOur)
 admin.site.register(HotVideo)
+admin.site.register(LunBo)

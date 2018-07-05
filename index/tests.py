@@ -23,3 +23,13 @@ class IndexTestCase(TestCase):
         c = Client()
         rep = c.get('/api/index/hotvideo/')
         self.assertEqual(rep.status_code, 200)
+
+    def test_join(self):
+        c = Client()
+        rep = c.get('/api/index/join/')
+        self.assertEqual(rep.status_code, 200)
+
+    def test_lunbo(self):
+        c = Client()
+        rep = c.get('/api/index/lunbo/')
+        self.assertEqual(rep.status_code, 200)

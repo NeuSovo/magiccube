@@ -48,7 +48,7 @@ class Events(models.Model):
         return self.eventtypedetail_set.all()
 
     evnet_weight_choices = ((0, '一级置顶'), (1, '二级置顶'), (2, '三级置顶'), (3, '四级置顶'),)
-
+    event_type_choices = ((0, '魔方赛事'), (1, '纸飞机'), (2, '数独'), (3, '其他'))
     def __str__(self):
         return self.name
 
@@ -57,6 +57,7 @@ class Events(models.Model):
     location = models.CharField(verbose_name="位置", max_length=50)
     country = models.CharField(verbose_name='国家', max_length=100, default="中国")
     evnet_weight = models.IntegerField(verbose_name='优先级', choices=evnet_weight_choices, default=3)
+    event_type = models.IntegerField(verbose_name='赛事类别', choices=event_type_choices, default=0, null=True, blank=True)
 
     event_province = models.ForeignKey(EventProvince, on_delete=models.SET(-1), verbose_name='赛事省份')
     event_project = models.ForeignKey(EventProject, on_delete=models.SET(-1), verbose_name='赛事项目')

@@ -20,6 +20,7 @@ class EventView(MultipleJsonResponseMixin, ListView):
         type_ = self.request.GET.get('type', None)
         province = self.request.GET.get('province', None)
         project = self.request.GET.get('project', None)
+        etype = self.request.GET.get('etype', None)
 
         if year:
             kwargs['event_date__year'] = year
@@ -29,6 +30,8 @@ class EventView(MultipleJsonResponseMixin, ListView):
             kwargs['event_project_id'] = project
         if type_:
             kwargs['eventtypedetail__type'] = type_
+        if etype:
+            kwargs['event_type'] = etype
 
         queryset = super(EventView, self).get_queryset()
         queryset = queryset.filter(**kwargs)

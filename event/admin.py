@@ -34,7 +34,7 @@ class EventsAdmin(admin.ModelAdmin):
         Admin View for Events
     '''
     list_display = ('event_date', 'name', 'location', 'evnet_weight', 'event_province', 'event_project')
-    list_filter = ('evnet_weight', 'event_date')
+    list_filter = ('evnet_weight', 'event_date', 'event_type')
     inlines = [EventsDetailAdmin, EventsTypeAdmin, EventsRulesAdmin, EventsTrafficAdmin,
         EventsScAdmin, ]  # raw_id_fields = ('',)  # readonly_fields = ('',)  # search_fields = ('',)
 
