@@ -23,8 +23,11 @@ def send_check_email(uid, username, email, fail_silently=False):
 def forget_password_email(email, fail_silently=False):
     subject = '【顺时针魔方】重置密码'
     uid = User.get_user_by_email(email)
+    if not uid:
+        return 
+    uid = uid.id
     to_list = [email]
-    token = "https://lab.zxh326.cn/auth/user/resetpassword?action=" + gen_jwt(uid, 'email', 'resetpassword', 0.17)
+    token = "https://lab.zxh326.cn/api/user/resetpassword?action=" + gen_jwt(uid, email, 'resetpassword', 0.17)
     html_content = email_forget_template.format(email=email, token=token)
     msg = EmailMessage(subject, html_content, None, to_list)
     msg.content_subtype = "html"
