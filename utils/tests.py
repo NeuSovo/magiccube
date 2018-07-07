@@ -25,7 +25,7 @@ class UserTestCase(TestCase):
     def test_login_invalid_user(self):
         c = Client()
         rep = c.post('/api/auth/login',
-                     {'email': 'test@qq.com', 'invalidpassword': 'test'})
+                     {'email': 'test@qq.com', 'password': 'invalid'})
         self.assertEqual(rep.status_code, 200)
         self.assertContains(rep, 'msg')
 

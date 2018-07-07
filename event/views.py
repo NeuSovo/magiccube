@@ -1,10 +1,14 @@
-from .models import *
-from dss.Mixin import MultipleJsonResponseMixin, JsonResponseMixin, FormJsonResponseMixin
+from django.http import Http404
+from django.views.generic import (CreateView, DetailView, FormView, ListView,
+                                  UpdateView)
+from dss.Mixin import (FormJsonResponseMixin, JsonResponseMixin,
+                       MultipleJsonResponseMixin)
 from dss.Serializer import serializer
 
-from django.http import Http404
-from django.views.generic import ListView, DetailView, FormView, CreateView, UpdateView
-from utils.tools import CheckToken, parse_info
+from utils.tools import CheckToken, parse_info, handle_post_body_to_json
+
+from .models import *
+
 
 class EventView(MultipleJsonResponseMixin, ListView):
     model = Events
@@ -83,7 +87,8 @@ class ApplyUserView(FormJsonResponseMixin, CheckToken, FormView):
         """
         return parse_info({'msg': 'token'})
 
-    def post(self, request, *args, **kwargs):
+    @handle_post_body_to_json
+    def post(self, request, body=None, *args, **kwargs):
         if not self.wrap_check_token_result():
             return self.render_to_response({'msg': self.message})
 

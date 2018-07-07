@@ -16,7 +16,7 @@ class UserAdmin(admin.ModelAdmin):
     # readonly_fields = ('password',)
 
     def save_model(self, request, obj, form, change):
-        password = request.POST['password'][0]
+        password = request.POST['password']
         password = make_password(password)
         obj.password = password
         obj.save()

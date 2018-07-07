@@ -12,10 +12,12 @@ class RegUserView(FormJsonResponseMixin, CreateView):
     http_method_names = ['post']
     exclude_attr = ('form',)
 
-    def post(self, request, *args, **kwargs):
-        email = request.POST.get('email')
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+    @handle_post_body_to_json
+    def post(self, request, body=None, *args, **kwargs):
+        # [TODO] check email style
+        email = body.get('email')
+        username = body.get('username')
+        password = body.get('password')
 
         is_exist_user = User.get_user_by_email(email)
         if is_exist_user:
@@ -34,9 +36,11 @@ class LoginView(FormJsonResponseMixin, FormView):
     http_method_names = ['post']
     resp = dict()
 
-    def post(self, request, *args, **kwargs):
-        user = User.login_user(request.POST.get(
-            'email'), request.POST.get('password'))
+    @handle_post_body_to_json
+    def post(self, request, body=None, *args, **kwargs):
+        # user = User.login_user(request.POST.get(
+        #     'email'), request.POST.get('password'))
+        user = User.login_user(**body)
         if not user:
             return self.render_to_response({'msg': '账号或密码错误'})
 
@@ -61,14 +65,11 @@ class UserProfileView(FormJsonResponseMixin, CheckToken, UpdateView):
 
         return self.render_to_response(serializer(self.user.userprofile, exclude_attr=('password', 'id', 'reg_date')))
 
-    def post(self, request, *args, **kwargs):
+    @handle_post_body_to_json
+    def post(self, request, body=None, *args, **kwargs):
         if not self.wrap_check_token_result():
             return self.render_to_response({'msg': self.message})
-
-        for i in request.POST.keys():
-            kwargs[i] = request.POST[i]
-
-        self.user.userprofile.update(**kwargs)
+        self.user.userprofile.update(**body)
         return self.render_to_response(serializer(self.user.userprofile, exclude_attr=('password', 'id', 'reg_date')))
 
 

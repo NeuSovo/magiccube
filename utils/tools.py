@@ -49,6 +49,18 @@ def de_jwt(jwt_payload):
         raise e
 
 
+def handle_post_body_to_json(func):
+    def wrapper(*args, **kw):
+        request = args[1]
+        try:
+            body = json.loads(request.body)
+        except (json.decoder.JSONDecodeError):
+            body = {i: request.POST.get(i) for i in request.POST.keys()}
+
+        return func(*args, **kw, body = body)
+    return wrapper
+
+
 class CheckToken(object):
     token = None
     user = None
