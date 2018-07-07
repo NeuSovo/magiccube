@@ -5,15 +5,27 @@ from celery.decorators import task
 
 from django.http import JsonResponse
 from django.core.mail import EmailMessage
-from .apps import email_check_template
+from .apps import email_check_template, email_forget_template
 from .models import User
 
 @task
 def send_check_email(uid, username, email, fail_silently=False):
-    subject = 'test'
+    subject = '【顺时针魔方】邮箱验证'
     to_list = [email]
     token = "https://lab.zxh326.cn/api/auth/checkemail?token="+gen_jwt(uid, username, 'checkemail')
     html_content = email_check_template.format(username=username, token=token)
+    msg = EmailMessage(subject, html_content, None, to_list)
+    msg.content_subtype = "html"
+    msg.send(fail_silently)
+
+
+@task
+def forget_password_email(email, fail_silently=False):
+    subject = '【顺时针魔方】重置密码'
+    uid = User.get_user_by_email(email)
+    to_list = [email]
+    token = "https://lab.zxh326.cn/auth/user/resetpassword?action=" + gen_jwt(uid, 'email', 'resetpassword', 0.17)
+    html_content = email_forget_template.format(email=email, token=token)
     msg = EmailMessage(subject, html_content, None, to_list)
     msg.content_subtype = "html"
     msg.send(fail_silently)
@@ -31,7 +43,7 @@ def parse_info(data, header=None, *args, **kwargs):
     return response
 
 
-def gen_jwt(user_id, user_email, do,exp_hours=1):
+def gen_jwt(user_id, user_email, do, exp_hours=1):
     jwt_payload = jwt.encode({
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=exp_hours),
         'user_id': user_id,
@@ -44,7 +56,7 @@ def gen_jwt(user_id, user_email, do,exp_hours=1):
 
 def de_jwt(jwt_payload):
     try:
-        return jwt.decode(jwt_payload, 'secret', leeway=10000)
+        return jwt.decode(jwt_payload, 'secret', leeway=1000)
     except Exception as e:
         raise e
 

@@ -75,3 +75,16 @@ class UserProfileTestCase(TestCase):
         rep = c.get('/api/auth/checkemail?token={}'.format("invalid token"))
         self.assertEqual(rep.status_code, 200)
         self.assertContains(rep, 'msg')
+    
+    def test_reset_password(self):
+        rep = self.c.post('/api/user/resetpassword', data={'password': 'test', 'new_password': 'new_test'})
+        self.assertEqual(rep.status_code, 200)
+        self.assertEqual(rep.json()['msg'], '修改成功')
+        rep = self.c.post('/api/auth/login', data={'email': 'test@qq.com', 'password': 'new_test'})
+        self.assertEqual(rep.status_code, 200)
+        self.assertContains(rep, 'profile')
+
+    def test_get_user_picture(self):
+        rep = self.c.get('/api/user/picture')
+        self.assertEqual(rep.status_code, 200)
+        self.assertContains(rep, 'picture_list')

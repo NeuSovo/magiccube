@@ -65,6 +65,14 @@ class User(models.Model):
 
         return user
 
+    @staticmethod
+    def change_user_password(old_password=None, password=None, user=None):
+        if check_password(old_password, user.password):
+            user.password = make_password(password)
+            user.save()
+            return True
+        return False
+
 
 class UserProfile(models.Model):
 
@@ -78,6 +86,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)
     username = models.CharField(verbose_name='姓名', max_length=100)
+    avatar = models.ImageField(verbose_name='头像', default='none', upload_to="avatar")
     sex = models.CharField(max_length=20, null=True,
                            blank=True, verbose_name='性别')
     birthday = models.CharField(
@@ -108,3 +117,14 @@ class UserProfile(models.Model):
         self.paperwork_type = kwagrs.get('paperwork_type', '')
         self.paperwork_id = kwagrs.get('paperwork_id', 0)
         self.save()
+
+
+class UserPicture(models.Model):
+
+    class Meta:
+        verbose_name = "用户相册"
+        verbose_name_plural = "用户相册"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='用户')
+    picture = models.ImageField(verbose_name='相册', null=True, blank=True, upload_to="picture")
+    

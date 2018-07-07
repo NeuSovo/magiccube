@@ -1,10 +1,11 @@
 from django.shortcuts import render
-from dss.Mixin import FormJsonResponseMixin, MultipleJsonResponseMixin
-from django.views.generic import FormView, CreateView, UpdateView, ListView
+from dss.Mixin import FormJsonResponseMixin, MultipleJsonResponseMixin, JsonResponseMixin
+from django.views.generic import FormView, CreateView, UpdateView, ListView, View
 from .models import *
 from dss.Serializer import serializer
 from .tools import *
 from event.models import ApplyUser
+from django.contrib.auth.hashers import make_password
 
 # Create your views here.
 class RegUserView(FormJsonResponseMixin, CreateView):
@@ -73,6 +74,46 @@ class UserProfileView(FormJsonResponseMixin, CheckToken, UpdateView):
         return self.render_to_response(serializer(self.user.userprofile, exclude_attr=('password', 'id', 'reg_date')))
 
 
+class UserPictureView(JsonResponseMixin, CheckToken, View):
+    model = UserPicture
+
+    def get(self, request, *args, **kwargs):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+
+        picture_list = self.user.userpicture_set.all()
+        return parse_info({'picture_list': serializer(picture_list, exclude_attr=('user'))})
+
+
+class ResetPasswordView(FormJsonResponseMixin, CheckToken, UpdateView):
+    http_method_names = ['post', 'get']
+
+    def get(self, request, *args, **kwargs):
+        res = dict()
+        jwt_payload = request.GET.get('token')
+        try:
+            user_info = de_jwt(jwt_payload)
+            user = User.get_user_by_id(user_info['user_id'])
+        except Exception as e:
+            return parse_info({'msg': '连接可能失效或者过期'})
+
+        if request.GET.get('password'):
+            user.password = make_password(request.GET.get('password'))
+            return parse_info({'msg': '重置成功'})
+        
+        return parse_info({'msg': '提交新密码'})
+
+    @handle_post_body_to_json
+    def post(self, request, body=None, *args, **kwargs):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+        old_password = body.get('password')
+        new_password = body.get('new_password')
+        if User.change_user_password(old_password, new_password, self.user):
+            return parse_info({'msg': '修改成功'})
+        return parse_info({'msg': '修改失败'})
+
+
 class GetUserApplyView(MultipleJsonResponseMixin, CheckToken, ListView):
     model = ApplyUser
     exclude_attr = ('password', 'id', 'event_id', 'reg_date', 'apply_user', 'evnet_weight',
@@ -109,3 +150,9 @@ def check_email_view(request):
     res['access_token'] = access_token
 
     return parse_info(res, header={'access_token': access_token})
+
+
+def forget_password_view(request):
+    u_email = request.POST.get('email')
+    forget_password_email.delay(u_email)
+    return parse_info({'msg': '已向邮箱 {}发送一个修改链接'.format(u_email)})
