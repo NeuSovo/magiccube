@@ -44,34 +44,35 @@ MANAGERS = ADMINS
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin', 
-    'django.contrib.auth', 
+    'django.contrib.admin',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions', 
-    'django.contrib.messages', 
-    'django.contrib.staticfiles', 
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
     # 'djcelery',
-    'index', 
-    'utils', 
-    'event', 
-    'paragraph', 
-    'simditor', 
-    'django_filters', 
-    'rest_framework', 
-    'shrine', 
+    'index',
+    'utils',
+    'event',
+    'paragraph',
+    'simditor',
+    'django_filters',
+    'rest_framework',
+    'shrine',
     'project',
-    'corsheaders'
+    'corsheaders',
+    'joinour'
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware', 
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware', 
+    'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',  
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware', 
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 ROOT_URLCONF = 'magiccube.urls'
@@ -99,8 +100,8 @@ WSGI_APPLICATION = 'magiccube.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', 
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'), 
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
     # 'mysql': {
     #     'ENGINE': 'django.db.backends.mysql',
@@ -168,10 +169,10 @@ SIMDITOR_UPLOAD_PATH = 'uploads/'
 SIMDITOR_IMAGE_BACKEND = 'pillow'
 
 SIMDITOR_TOOLBAR = [
-    'title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 
-    'ol', 'ul', 'blockquote', '|', 
-    'link', 'image', 'hr', '|', 
-    'indent', 'outdent', 'alignment', 'fullscreen', 
+    'title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|',
+    'ol', 'ul', 'blockquote', '|',
+    'link', 'image', 'hr', '|',
+    'indent', 'outdent', 'alignment', 'fullscreen',
 ]
 
 SIMDITOR_CONFIGS = {
