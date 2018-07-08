@@ -1,11 +1,16 @@
-from django.shortcuts import render
-from dss.Mixin import FormJsonResponseMixin, MultipleJsonResponseMixin, JsonResponseMixin
-from django.views.generic import FormView, CreateView, UpdateView, ListView, View
-from .models import *
-from dss.Serializer import serializer
-from .tools import *
-from event.models import ApplyUser
 from django.contrib.auth.hashers import make_password
+from django.shortcuts import HttpResponseRedirect, render
+from django.views.generic import (CreateView, FormView, ListView, UpdateView,
+                                  View)
+from dss.Mixin import (FormJsonResponseMixin, JsonResponseMixin,
+                       MultipleJsonResponseMixin)
+from dss.Serializer import serializer
+
+from event.models import ApplyUser
+
+from .models import *
+from .tools import *
+
 
 # Create your views here.
 class RegUserView(FormJsonResponseMixin, CreateView):
@@ -44,6 +49,9 @@ class LoginView(FormJsonResponseMixin, FormView):
         user = User.login_user(**body)
         if not user:
             return self.render_to_response({'msg': '账号或密码错误'})
+
+        if user.is_email_check != 2 :
+            return self.render_to_response({'msg': '请先验证邮箱', 'is_email_check': user.is_email_check})
 
         access_token = gen_jwt(
             user_id=user.id, user_email=user.email, do="token", exp_hours=24 * 7)
@@ -85,13 +93,14 @@ class UserPictureView(JsonResponseMixin, CheckToken, View):
         return parse_info({'picture_list': serializer(picture_list, exclude_attr=('user'))})
 
 
-class ResetPasswordView(FormJsonResponseMixin, CheckToken, UpdateView):
+class ResetPasswordView(JsonResponseMixin, CheckToken, View):
     http_method_names = ['post', 'get']
 
     def get(self, request, *args, **kwargs):
         res = dict()
         jwt_payload = request.GET.get('token')
         try:
+            print (jwt_payload)
             user_info = de_jwt(jwt_payload)
             user = User.get_user_by_id(user_info['user_id'])
         except Exception as e:
@@ -135,10 +144,10 @@ def check_email_view(request):
         user_info = de_jwt(jwt_payload)
         user = User.get_user_by_id(user_info['user_id'])
     except Exception as e:
-        return parse_info({'msg': '连接可能失效或者过期'})
+        return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?check=failed')
 
     if user.is_email_check == 2:
-        return parse_info({'msg': '已验证'})
+        return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?')
 
     user.is_email_check = 2
     user.save()
@@ -149,7 +158,7 @@ def check_email_view(request):
     res['msg'] = 'success'
     res['access_token'] = access_token
 
-    return parse_info(res, header={'access_token': access_token})
+    return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?check=success')
 
 
 def forget_password_view(request):

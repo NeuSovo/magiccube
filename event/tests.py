@@ -107,6 +107,8 @@ class ApplyTestCase(TestCase):
         self.user = User.reg_user(
             email='test@qq.com', username='test', password='test')
         self.c = Client()
+        self.user.is_email_check = 2
+        self.user.save()
         res = self.c.post('/api/auth/login',
                     {'email': 'test@qq.com', 'password': 'test'})
         self.token = res.json()['access_token']

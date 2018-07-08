@@ -2,11 +2,15 @@ from django.test import TestCase, Client
 
 # Create your tests here.
 from .models import *
+
+
 class UserTestCase(TestCase):
 
     def setUp(self):
         self.user = User.reg_user(
             email='test@qq.com', username='test', password='test')
+        self.user.is_email_check = 2
+        self.user.save()
 
     def test_reg_user(self):
         c = Client()
@@ -42,8 +46,11 @@ class UserProfileTestCase(TestCase):
         self.user = User.reg_user(
             email='test@qq.com', username='test', password='test')
         self.c = Client()
+        self.user.is_email_check = 2
+        self.user.save()
         res = self.c.post('/api/auth/login',
-                    {'email': 'test@qq.com', 'password': 'test'})
+                          {'email': 'test@qq.com', 'password': 'test'})
+        
         self.token = res.json()['access_token']
 
     def test_update_user_profile(self):
@@ -67,20 +74,20 @@ class UserProfileTestCase(TestCase):
     def test_check_email(self):
         c = Client()
         rep = c.get('/api/auth/checkemail?token={}'.format(self.token))
-        self.assertEqual(rep.status_code, 200)
-        self.assertEqual(rep.json()['msg'], 'success')
+        self.assertEqual(rep.status_code, 302)
 
     def test_check_invalid_email(self):
         c = Client()
         rep = c.get('/api/auth/checkemail?token={}'.format("invalid token"))
-        self.assertEqual(rep.status_code, 200)
-        self.assertContains(rep, 'msg')
-    
+        self.assertEqual(rep.status_code, 302)
+
     def test_reset_password(self):
-        rep = self.c.post('/api/user/resetpassword', data={'password': 'test', 'new_password': 'new_test'})
+        rep = self.c.post('/api/user/resetpassword',
+                          data={'password': 'test', 'new_password': 'new_test'})
         self.assertEqual(rep.status_code, 200)
         self.assertEqual(rep.json()['msg'], '修改成功')
-        rep = self.c.post('/api/auth/login', data={'email': 'test@qq.com', 'password': 'new_test'})
+        rep = self.c.post(
+            '/api/auth/login', data={'email': 'test@qq.com', 'password': 'new_test'})
         self.assertEqual(rep.status_code, 200)
         self.assertContains(rep, 'profile')
 

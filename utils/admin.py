@@ -25,7 +25,8 @@ class UserAdmin(admin.ModelAdmin):
             password = request.POST['password']
             password = make_password(password)
             obj.password = password
-            obj.save()
+        obj.save()
+
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
