@@ -2,7 +2,6 @@ import jwt
 import json
 import datetime
 from celery.decorators import task
-
 from django.http import JsonResponse
 from django.core.mail import EmailMessage
 from .apps import email_check_template, email_forget_template

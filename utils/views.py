@@ -1,3 +1,4 @@
+from django.http import QueryDict
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import HttpResponseRedirect, render
 from django.views.generic import (CreateView, FormView, ListView, UpdateView,
@@ -7,7 +8,6 @@ from dss.Mixin import (FormJsonResponseMixin, JsonResponseMixin,
 from dss.Serializer import serializer
 
 from event.models import ApplyUser
-
 from .models import *
 from .tools import *
 
@@ -88,9 +88,29 @@ class UserPictureView(JsonResponseMixin, CheckToken, View):
     def get(self, request, *args, **kwargs):
         if not self.wrap_check_token_result():
             return self.render_to_response({'msg': self.message})
-
         picture_list = self.user.userpicture_set.all()
         return parse_info({'picture_list': serializer(picture_list, exclude_attr=('user'))})
+
+    def post(self, request, *args, **kwargs):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+        try:
+            UserPicture(user=self.user, picture=request.FILES['img']).save()
+            return self.get(request, *args, **kwargs)
+        except Exception as e:
+            return self.render_to_response({'msg': 'failed'})
+
+    def delete(self, request, *args, **kwargs):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+        pid = QueryDict(request.body).get('pid')
+        try:
+            picture = UserPicture.objects.get(id=pid)
+        except Exception as e:
+            return self.render_to_response({'msg': 'failed'})
+
+        picture.delete()
+        return self.get(request, *args, **kwargs)
 
 
 class ResetPasswordView(JsonResponseMixin, CheckToken, View):
@@ -135,6 +155,19 @@ class GetUserApplyView(MultipleJsonResponseMixin, CheckToken, ListView):
 
         queryset = queryset.filter(apply_user=self.user)
         return queryset
+
+
+class UpdateUserAvatarView(JsonResponseMixin, CheckToken, View):
+
+    def post(self, request, *args, **kwargs):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+        try:
+            self.user.userprofile.avatar = request.FILES['img']
+            self.user.userprofile.save()
+            return self.render_to_response({'msg': 'success'})
+        except Exception as e:
+            return self.render_to_response({'msg': 'failed'})
 
 
 def check_email_view(request):
