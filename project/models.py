@@ -5,11 +5,20 @@ from simditor.fields import RichTextField
 class Project(models.Model):
 
     class Meta:
-        verbose_name = "添加项目"
-        verbose_name_plural = "添加项目"
+        verbose_name = "项目内容"
+        verbose_name_plural = "项目内容"
 
     def __str__(self):
         return self.title
     
-    title = models.CharField(verbose_name='项目名称', max_length=50)
-    content = RichTextField(verbose_name='项目介绍')
+    content = RichTextField(verbose_name='项目内容')
+
+
+class SSZModel(models.Model):
+
+    class Meta:
+        verbose_name = "SSZ联赛"
+        verbose_name_plural = "SSZ联赛"
+
+    content = RichTextField(verbose_name='项目内容')
+    

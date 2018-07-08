@@ -5,6 +5,5 @@ urlpatterns = [
     path('news/', NewsList.as_view()),
     path('hotvideo/', HotVideoListView.as_view()),
     path('recentevent/', RecentEvent.as_view()),
-    path('join/', get_join_our),
     path('lunbo/', get_lunbo_img)
 ]

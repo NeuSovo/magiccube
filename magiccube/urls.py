@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from joinour.views import get_join_our
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('utils.urls')),
@@ -24,5 +25,7 @@ urlpatterns = [
     path('api/event/', include('event.urls')),
     path('api/paragraph/', include('paragraph.urls')),
     path('api/', include('shrine.urls')),
-    path('api/project/', include('project.urls'))
+    path('api/project/', include('project.urls')),
+
+    path('join/', get_join_our),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

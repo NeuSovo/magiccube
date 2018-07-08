@@ -1,7 +1,4 @@
 from django.db import models
-from simditor.fields import RichTextField
-
-
 
 class News(models.Model):
 
@@ -38,19 +35,6 @@ class HotVideo(models.Model):
     title = models.CharField(verbose_name="标题", max_length=50)
     video_url = models.URLField(verbose_name="链接")
     add_time = models.DateTimeField(auto_now_add=True)
-
-
-class JoinOur(models.Model):
-
-    class Meta:
-        verbose_name = "加盟信息"
-        verbose_name_plural = "加盟信息"
-        ordering = ['-id']
-
-    def __str__(self):
-        return '加盟信息填写, 只会显示最新的'
-
-    info = RichTextField(verbose_name='加盟信息填写')
 
 
 class LunBo(models.Model):
