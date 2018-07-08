@@ -7,7 +7,7 @@ class Project(models.Model):
     class Meta:
         verbose_name = "项目内容"
         verbose_name_plural = "项目内容"
-    
+
     content = RichTextField(verbose_name='项目内容')
 
 

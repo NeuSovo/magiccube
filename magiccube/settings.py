@@ -33,7 +33,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.exmail.qq.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'i@zxh326.cn'
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_PASSWORD = 'Zhang@326'
 EMAIL_SUBJECT_PREFIX = 'website'
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = SERVER_EMAIL = EMAIL_HOST_USER
@@ -103,14 +103,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
-    # 'mysql': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'magiccube',
-    #     'USER': 'magiccube',
-    #     'PASSWORD': '123456',
-    #     'HOST': '127.0.0.1',
-    #     'PORT': '3306',
-    # }
+#    'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'magiccube',
+#         'USER': 'magiccube',
+#         'PASSWORD': '123456',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+     }
 }
 
 # Password validation
