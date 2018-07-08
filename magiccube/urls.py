@@ -27,5 +27,5 @@ urlpatterns = [
     path('api/', include('shrine.urls')),
     path('api/project/', include('project.urls')),
 
-    path('join/', get_join_our),
+    path('api/join/', get_join_our),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

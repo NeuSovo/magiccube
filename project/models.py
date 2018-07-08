@@ -8,9 +8,6 @@ class Project(models.Model):
         verbose_name = "项目内容"
         verbose_name_plural = "项目内容"
 
-    def __str__(self):
-        return self.title
-    
     content = RichTextField(verbose_name='项目内容')
 
 
