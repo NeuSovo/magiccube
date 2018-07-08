@@ -177,10 +177,10 @@ def check_email_view(request):
         user_info = de_jwt(jwt_payload)
         user = User.get_user_by_id(user_info['user_id'])
     except Exception as e:
-        return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?check=failed')
+        return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?check_success=0')
 
     if user.is_email_check == 2:
-        return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?')
+        return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?check_success=1')
 
     user.is_email_check = 2
     user.save()
@@ -191,7 +191,7 @@ def check_email_view(request):
     res['msg'] = 'success'
     res['access_token'] = access_token
 
-    return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?check=success')
+    return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?check_success=1')
 
 
 def forget_password_view(request):
