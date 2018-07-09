@@ -9,3 +9,5 @@ install:
 script:
   - coverage run --source='.' --omit=venv/*,*/migrations/*,*_init__.py manage.py test
   - coverage report
+after_success:
+  - coveralls
