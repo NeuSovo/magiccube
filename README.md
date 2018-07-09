@@ -1,5 +1,6 @@
 # magiccube
 [![Build Status](https://travis-ci.org/zxh326/magiccube.svg?branch=master)](https://travis-ci.org/zxh326/magiccube)
+[![Coverage Status](https://coveralls.io/repos/github/zxh326/magiccube/badge.svg?branch=master)](https://coveralls.io/github/zxh326/magiccube?branch=master)
 ## Requirements
 ```bash
 pythom -m venv venv
