@@ -128,6 +128,7 @@ class ResetPasswordView(JsonResponseMixin, CheckToken, View):
 
         if request.GET.get('password'):
             user.password = make_password(request.GET.get('password'))
+            user.save()
             return parse_info({'msg': '重置成功'})
         
         return parse_info({'msg': '提交新密码'})
@@ -177,10 +178,10 @@ def check_email_view(request):
         user_info = de_jwt(jwt_payload)
         user = User.get_user_by_id(user_info['user_id'])
     except Exception as e:
-        return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?check_success=0')
+        return HttpResponseRedirect('http://www.chao6hui.cn/views/banner.html?check_success=0')
 
     if user.is_email_check == 2:
-        return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?check_success=1')
+        return HttpResponseRedirect('http://www.chao6hui.cn/views/banner.html?check_success=1')
 
     user.is_email_check = 2
     user.save()
@@ -191,10 +192,14 @@ def check_email_view(request):
     res['msg'] = 'success'
     res['access_token'] = access_token
 
-    return HttpResponseRedirect('http://www.chao6hui.cn/pages/index.html?check_success=1')
+    return HttpResponseRedirect('http://www.chao6hui.cn/views/banner.html?check_success=1')
 
 
 def forget_password_view(request):
     u_email = request.POST.get('email')
-    forget_password_email.delay(u_email)
-    return parse_info({'msg': '已向邮箱 {}发送一个修改链接'.format(u_email)})
+    if User.is_exist_user(u_email):
+        forget_password_email.delay(u_email)
+        return parse_info({'msg': '已向邮箱 {}发送一个修改链接'.format(u_email)})
+
+    return parse_info({'msg': '邮箱不存在'})
+
