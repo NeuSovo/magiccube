@@ -6,8 +6,9 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install coverage
+  - pip install coveralls
 script:
-  - coverage run --source='.' --omit=venv/*,*/migrations/*,*_init__.py manage.py test
+  - coverage run --source='.' --omit=venv/*,*/migrations/*,*_init__.py,joinour/* manage.py test
   - coverage report
 after_success:
   - coveralls

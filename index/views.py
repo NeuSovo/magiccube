@@ -27,13 +27,6 @@ class HotVideoListView(MultipleJsonResponseMixin, ListView):
     datetime_type = 'string'
 
 
-def get_join_our(request):
-    info = JoinOur.objects.all()[:1]
-    if info:
-        return parse_info({'info': info[0].info})
-    return parse_info({})
-
-
 def get_lunbo_img(request):
     count = request.GET.get('count')
     count = int(count) if count else 3

@@ -1,11 +1,10 @@
 from django.http import Http404
-from django.views.generic import (CreateView, DetailView, FormView, ListView,
-                                  UpdateView)
+from django.views.generic import DetailView, FormView, ListView
 from dss.Mixin import (FormJsonResponseMixin, JsonResponseMixin,
                        MultipleJsonResponseMixin)
 from dss.Serializer import serializer
 
-from utils.tools import CheckToken, parse_info, handle_post_body_to_json
+from utils.tools import CheckToken, handle_post_body_to_json, parse_info
 
 from .models import *
 
@@ -132,9 +131,7 @@ def get_event_type_view(request, event_id):
             'type_lines': i.lines,
             'type_price': i.price
         })
-
-    res['type'] = all_type
-    
+    res['type'] = all_type  
     res['can_apply_count'] = int(
         event.eventsdetail.apply_count) - len(event.applyuser_set.filter(is_check=1))
 

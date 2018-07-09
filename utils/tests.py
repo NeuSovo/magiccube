@@ -95,3 +95,8 @@ class UserProfileTestCase(TestCase):
         rep = self.c.get('/api/user/picture')
         self.assertEqual(rep.status_code, 200)
         self.assertContains(rep, 'picture_list')
+
+    def test_forget_password(self):
+        rep = self.c.post('/api/auth/forget', data={'email': 'test@qq.com'})
+        self.assertEqual(rep.status_code, 200)
+        self.assertContains(rep, 'msg')
