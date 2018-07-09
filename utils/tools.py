@@ -7,14 +7,14 @@ from django.core.mail import EmailMessage
 from .apps import email_check_template, email_forget_template
 from .models import User
 
-GLOBAL_URL = 'https://lab.zxh326.cn/api'
-SECOND_URL = 'http://www.chao6hui.cn/views/banner.html'
+FRONTEND_URL = 'http://www.chao6hui.cn/pages/index.html'
+BACKEND_URL = 'https://lab.zxh326.cn/api/'
 
 @task
 def send_check_email(uid, username, email, fail_silently=False):
     subject = '【顺时针魔方】邮箱验证'
     to_list = [email]
-    token = SECOND_URL + "?token="+ gen_jwt(uid, username, 'checkemail')
+    token = BACKEND_URL + "auth/checkemail?token="+ gen_jwt(uid, username, 'checkemail')
     html_content = email_check_template.format(username=username, token=token)
     msg = EmailMessage(subject, html_content, None, to_list)
     msg.content_subtype = "html"
@@ -29,7 +29,7 @@ def forget_password_email(email, fail_silently=False):
         return 
     uid = uid.id
     to_list = [email]
-    token = SECOND_URL +"?token=" + gen_jwt(uid, email, 'resetpassword', 0.17)
+    token = FRONTEND_URL +"?token=" + gen_jwt(uid, email, 'resetpassword', 0.17)
     html_content = email_forget_template.format(email=email, token=token)
     msg = EmailMessage(subject, html_content, None, to_list)
     msg.content_subtype = "html"
