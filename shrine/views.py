@@ -56,7 +56,7 @@ class RankRecode(viewsets.ReadOnlyModelViewSet):
     @list_route(url_path='authority')
     @renderer_classes((JSONRenderer,))
     def average(self, request):
-        area = request.query_params.get('area', None)
+        area = request.query_params.get('area', '中国')
         NULL = {'msg': '麻烦带上区域'}
         if (area):
             return (self.authority(area))

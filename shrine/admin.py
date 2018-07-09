@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Authority
 @admin.register(Authority)
 class AuthorityAdmin(admin.ModelAdmin):
-    list_display = ['user_', 'events_', 'event_type', 'turn', 'single', 'recent']
+    list_display = ['username', 'events_', 'event_type', 'turn', 'single', 'recent']
 
     def user_(self, obj):
         return obj.username.username
