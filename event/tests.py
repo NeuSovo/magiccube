@@ -13,6 +13,7 @@ class EventsTests(TestCase):
         self.eventtype = EventType(type="测试类型")
         self.eventtype.save()
         self.event = Events(name="测试赛事", location='无',
+                            event_date = datetime.now(),
                             event_province=self.eventprovince, event_project=self.eventproject)
         self.event.save()
         self.eventtypedetail = EventTypeDetail(
@@ -83,6 +84,7 @@ class ApplyTestCase(TestCase):
         self.eventtype = EventType(type="测试类型")
         self.eventtype.save()
         self.event = Events(name="测试赛事", location='无',
+                            event_date = datetime.now(),
                             event_province=self.eventprovince, event_project=self.eventproject)
         self.event.save()
         self.eventtypedetail = EventTypeDetail(
