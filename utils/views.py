@@ -113,6 +113,25 @@ class UserPictureView(JsonResponseMixin, CheckToken, View):
         return self.get(request, *args, **kwargs)
 
 
+class UserFirstView(JsonResponseMixin, CheckToken, View):
+    def get(self, request, *args, **kwargs):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+        picture_list = self.user.userfirst_set.all()
+        return parse_info({'userfirst_list': serializer(picture_list, exclude_attr=('user'))})
+
+    def post(self, request, *args, **kwargs):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+        try:
+            first_lists = request.POST.getlist('firsts')
+            to_save = [UserFirst(user=self.user, project=i) for i in first_lists]
+            UserFirst.objects.bulk_create(to_save)
+            return self.get(request, *args, **kwargs)
+        except Exception as e:
+            return self.render_to_response({'msg': 'failed'})
+
+
 class ResetPasswordView(JsonResponseMixin, CheckToken, View):
     http_method_names = ['post', 'get']
 

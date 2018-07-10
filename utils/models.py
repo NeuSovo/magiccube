@@ -127,4 +127,18 @@ class UserPicture(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='用户')
     picture = models.ImageField(verbose_name='相册', null=True, blank=True, upload_to="picture")
+
+
+class UserFirst(models.Model):
+
+    class Meta:
+        verbose_name = "用户首选项目"
+        verbose_name_plural = "用户首选项目s"
+
+    def __str__(self):
+        pass
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='用户')
+    project = models.CharField(verbose_name='首选项目', null=True, blank=True, max_length=30)
+    
     

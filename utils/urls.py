@@ -11,5 +11,6 @@ urlpatterns = [
     path('user/getapply', GetUserApplyView.as_view()),
     path('user/picture', UserPictureView.as_view()),
     path('user/resetpassword', ResetPasswordView.as_view()),
-    path('user/avatar', UpdateUserAvatarView.as_view())
+    path('user/avatar', UpdateUserAvatarView.as_view()),
+    path('user/first', UserFirstView.as_view())
 ]

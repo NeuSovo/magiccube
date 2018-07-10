@@ -100,3 +100,9 @@ class UserProfileTestCase(TestCase):
         rep = self.c.post('/api/auth/forget', data={'email': 'test@qq.com'})
         self.assertEqual(rep.status_code, 200)
         self.assertContains(rep, 'msg')
+
+    def test_user_first(self):
+        rep = self.c.post('/api/user/first', data={'firsts': 'test@qq.com'})
+        self.assertEqual(rep.status_code, 200)
+        rep = self.c.get('/api/user/first')
+        self.assertContains(rep, 'test@qq.com')
