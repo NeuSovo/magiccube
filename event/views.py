@@ -5,7 +5,7 @@ from dss.Mixin import (FormJsonResponseMixin, JsonResponseMixin,
 from dss.Serializer import serializer
 
 from utils.tools import CheckToken, handle_post_body_to_json, parse_info
-
+from datetime import datetime 
 from .models import *
 
 
@@ -24,6 +24,7 @@ class EventView(MultipleJsonResponseMixin, ListView):
         province = self.request.GET.get('province', None)
         project = self.request.GET.get('project', None)
         etype = self.request.GET.get('etype', 0)
+        search = self.request.GET.get('search', None)
 
         if year:
             kwargs['event_date__year'] = year
@@ -35,6 +36,8 @@ class EventView(MultipleJsonResponseMixin, ListView):
             kwargs['eventtypedetail__type'] = type_
         if etype:
             kwargs['event_type'] = etype
+        if search:
+            kwargs['name'] = search
 
         queryset = super(EventView, self).get_queryset()
         queryset = queryset.filter(**kwargs)
@@ -107,7 +110,8 @@ def get_event_filter_view(request):
     all_project = EventProject.objects.all()
     all_province = EventProvince.objects.all()
     all_type = EventType.objects.all()
-
+    res['all_year'] = [str(i) for i in reversed(
+        range(2010, datetime.now().year + 1)) if Events.objects.filter(event_date__year=i).exists()]
     res['all_project'] = serializer(all_project)
     res['all_province'] = serializer(all_province)
     res['all_type'] = serializer(all_type)
@@ -131,7 +135,7 @@ def get_event_type_view(request, event_id):
             'type_lines': i.lines,
             'type_price': i.price
         })
-    res['type'] = all_type  
+    res['type'] = all_type
     res['can_apply_count'] = int(
         event.eventsdetail.apply_count) - len(event.applyuser_set.filter(is_check=1))
 
