@@ -16,6 +16,6 @@ script:
 - coverage report
 after_success:
 - coveralls
-- ssh root@47.93.188.227 "~/build.ssh"
+# - ssh root@47.93.188.227 "~/build.ssh"
 add_ones:
   ssh_known_hosts:47.93.188.227

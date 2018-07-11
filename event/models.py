@@ -114,6 +114,8 @@ class EventTraffic(models.Model):
 
     event = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
     event_traffic = RichTextField(verbose_name='赛事交通', null=True, blank=True)
+    lat = models.DecimalField(verbose_name='经纬度', max_digits=9, decimal_places=6, null=True, blank=True, default=116.404)
+    lng = models.DecimalField(verbose_name='纬度', max_digits=9, decimal_places=6, null=True, blank=True, default=39.915)
 
 
 class EventSc(models.Model):
