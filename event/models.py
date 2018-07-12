@@ -178,17 +178,25 @@ class ApplyUser(models.Model):
     def create(user, apply_types, **kwagrs):
         import uuid
         uuid = str(uuid.uuid1())
-        event = Events.objects.get(id=kwagrs.get('event_id', 0))
+        try:
+            event = Events.objects.get(id=kwagrs.get('event_id', 0))
+        except:
+            return None
         apply_user = user
         total_price = kwagrs.get('total_price', 0)
         remarks = kwagrs.get('remarks', 0)
         apply_ = ApplyUser(apply_id=uuid, event=event, apply_user=apply_user, total_price=total_price, remarks=remarks)
-        apply_.save()
+        
 
         apply_types_list = []
-        for i in apply_types:
-            apply_types_list.append(ApplyUserTypes(apply=apply_, apply_type=EventTypeDetail.objects.get(id=i)))
+        
+        try:
+            for i in apply_types:
+                apply_types_list.append(ApplyUserTypes(apply=apply_, apply_type=EventTypeDetail.objects.get(id=i)))
+        except:
+            return None
 
+        apply_.save()
         ApplyUserTypes.objects.bulk_create(apply_types_list)
         return apply_
 

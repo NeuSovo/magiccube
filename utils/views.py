@@ -1,4 +1,4 @@
-from django.http import QueryDict
+from django.http import QueryDict, Http404
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import HttpResponseRedirect, render
 from django.views.generic import (CreateView, FormView, ListView, UpdateView,
@@ -222,3 +222,15 @@ def forget_password_view(request):
 
     return parse_info({'msg': '邮箱不存在'})
 
+
+def get_user_profile_view(request, user_id):
+    res = {}
+    try:
+        user = User.get_user_by_id(user_id)
+    except Exception as e:
+        raise Http404('user_id 错误')
+    res['profile'] = serializer(user.userprofile, exclude_attr=('user', 'phone', 'paperwork_type', 'paperwork_id'), datetime_format='string')
+    res['apply_event'] = serializer(user.applyuser_set.all(), exclude_attr=('apply_user'), datetime_format='string')
+    res['record'] = serializer(user.userprofile.authority_set.all(), exclude_attr=('username','username_id','events_id','eventType_id',), datetime_format='string')
+
+    return parse_info(res)

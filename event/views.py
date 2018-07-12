@@ -99,10 +99,13 @@ class ApplyUserView(FormJsonResponseMixin, CheckToken, FormView):
 
         for i in request.POST.keys():
             kwargs[i] = request.POST[i]
-        apply_types = request.POST.getlist('types')
+        apply_types =(kwargs['types'].split(','))
+
         apply_ = ApplyUser.create(
             user=self.user, apply_types=apply_types, **kwargs)
-        return self.render_to_response(serializer(apply_, exclude_attr=('password', 'id', 'reg_date'), datetime_format='string'))
+        if apply_:
+            return self.render_to_response(serializer(apply_, exclude_attr=('password', 'id', 'reg_date'), datetime_format='string'))
+        return self.render_to_response({'msg': '赛事或者类型id错误'})
 
 
 def get_event_filter_view(request):

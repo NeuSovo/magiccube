@@ -106,3 +106,8 @@ class UserProfileTestCase(TestCase):
         self.assertEqual(rep.status_code, 200)
         rep = self.c.get('/api/user/first')
         self.assertContains(rep, 'test@qq.com')
+
+    def test_get_user_profile(self):
+        rep = self.c.get('/api/user/profile/{}'.format(self.user.id))
+        self.assertEqual(rep.status_code, 200)
+        self.assertContains(rep, 'username')
