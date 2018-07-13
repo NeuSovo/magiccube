@@ -230,6 +230,7 @@ def get_user_profile_view(request, user_id):
     except Exception as e:
         raise Http404('user_id 错误')
     res['profile'] = serializer(user.userprofile, exclude_attr=('user', 'phone', 'paperwork_type', 'paperwork_id'), datetime_format='string')
+    res['picture'] = serializer(user.userpicture_set.all(), exclude_attr=('user'))
     res['apply_event'] = serializer(user.applyuser_set.all(), exclude_attr=('apply_user'), datetime_format='string')
     res['record'] = serializer(user.userprofile.authority_set.all(), exclude_attr=('username','username_id','events_id','eventType_id',), datetime_format='string')
 
