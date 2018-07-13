@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/project/', include('project.urls')),
 
     path('api/join/', get_join_our),
+    path('simditor/', include('simditor.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -183,5 +183,6 @@ SIMDITOR_CONFIGS = {
     },
     'emoji': {
         'imagePath': '/static/simditor/images/emoji/'
-    }
+    },
+    'is_api': True,
 }

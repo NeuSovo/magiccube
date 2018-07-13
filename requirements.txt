@@ -6,7 +6,7 @@ Pillow
 PyJWT
 django-celery
 celery-with-redis
-django-simditor
+git+https://github.com/zxh326/django-simditor.git
 djangorestframework
 django-filter
 django-cors-headers
