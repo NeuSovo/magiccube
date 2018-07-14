@@ -124,7 +124,8 @@ class UserFirstView(JsonResponseMixin, CheckToken, View):
         if not self.wrap_check_token_result():
             return self.render_to_response({'msg': self.message})
         try:
-            first_lists = request.POST.getlist('firsts')
+            # first_lists = request.POST.getlist('firsts')
+            first_lists = (kwargs['firsts'].split(','))
             to_save = [UserFirst(user=self.user, project=i) for i in first_lists]
             UserFirst.objects.bulk_create(to_save)
             return self.get(request, *args, **kwargs)
