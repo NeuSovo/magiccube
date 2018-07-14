@@ -118,7 +118,7 @@ class UserFirstView(JsonResponseMixin, CheckToken, View):
         if not self.wrap_check_token_result():
             return self.render_to_response({'msg': self.message})
         picture_list = self.user.userfirst_set.all()
-        return parse_info({'userfirst_list': serializer(picture_list, exclude_attr=('user'))})
+        return parse_info({'userfirst_list': serializer(picture_list, exclude_attr=('user','id'))})
 
     def post(self, request, *args, **kwargs):
         if not self.wrap_check_token_result():
@@ -126,6 +126,7 @@ class UserFirstView(JsonResponseMixin, CheckToken, View):
         try:
             # first_lists = request.POST.getlist('firsts')
             first_lists = (request.POST.get('firsts', '').split(','))
+            self.user.userfirst_set.all().delete()
             to_save = [UserFirst(user=self.user, project=i) for i in first_lists]
             UserFirst.objects.bulk_create(to_save)
             return self.get(request, *args, **kwargs)
