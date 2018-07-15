@@ -16,7 +16,7 @@ class NewsList(MultipleJsonResponseMixin, ListView):
 class RecentEvent(MultipleJsonResponseMixin, ListView):
     model = Events
     query_set = Events.objects.all()[:15]
-    paginate_by = 15
+    paginate_by = 5
     datetime_type = 'string'
 
 
