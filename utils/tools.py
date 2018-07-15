@@ -7,7 +7,7 @@ from django.core.mail import EmailMessage
 from .apps import email_check_template, email_forget_template
 from .models import User
 
-FRONTEND_URL = 'http://www.chao6hui.cn/pages/index.html'
+FRONTEND_URL = 'http://www.chao6hui.cn/views/index.html'
 BACKEND_URL = 'https://lab.zxh326.cn/api/'
 
 @task
