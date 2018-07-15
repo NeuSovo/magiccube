@@ -91,6 +91,7 @@ class ApplyUserAdmin(admin.ModelAdmin):
             import uuid
             uuid = str(uuid.uuid1())
             obj.apply_id = uuid
+            obj.total_price = obj.event.eventsdetail.base_price + obj.total_price
             obj.save()
 
 

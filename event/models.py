@@ -61,7 +61,7 @@ class Events(models.Model):
     location = models.CharField(verbose_name="位置", max_length=50)
     country = models.CharField(verbose_name='国家', max_length=100, default="中国")
     evnet_weight = models.IntegerField(verbose_name='优先级', choices=evnet_weight_choices, default=3)
-    event_type = models.IntegerField(verbose_name='赛事类别', choices=event_type_choices, default=0, null=True, blank=True)
+    event_type = models.IntegerField(verbose_name='赛事类别', choices=event_type_choices, default=0)
 
     event_province = models.ForeignKey(EventProvince, on_delete=models.SET(-1), verbose_name='赛事省份')
     event_project = models.ForeignKey(EventProject, on_delete=models.SET(-1), verbose_name='赛事项目')
@@ -94,6 +94,7 @@ class EventsDetail(models.Model):
 
     event = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
     evnet_org = models.CharField(verbose_name='主办方、代表', max_length=20)
+    base_price = models.IntegerField(verbose_name='基础报名费', default=0)
     evnet_represent = models.CharField(verbose_name='项目及参赛资格', max_length=100)
     apply_count = models.IntegerField(verbose_name='报名人数限制', default=0)
     event_apply_begin_time = models.DateTimeField(verbose_name='报名起始时间')
@@ -173,7 +174,7 @@ class ApplyUser(models.Model):
     event = models.ForeignKey(Events, on_delete=models.SET(-1), verbose_name='报名赛事')
     apply_user = models.ForeignKey(User, on_delete=models.SET(-1), verbose_name='报名用户')
     create_time = models.DateTimeField(auto_now_add=True)
-    total_price = models.IntegerField(null=True, verbose_name='总价')
+    total_price = models.IntegerField(null=True, verbose_name='总价(自动加上赛事基础报名费)')
     remarks = models.CharField(max_length=155, null=True, blank=True, verbose_name='留言')
     is_check = models.IntegerField(default=0, choices=[[0, '未缴费'], [1, '已缴费']], verbose_name='是否缴费')
 
@@ -188,7 +189,7 @@ class ApplyUser(models.Model):
         apply_user = user
         total_price = kwagrs.get('total_price', 0)
         remarks = kwagrs.get('remarks', 0)
-        apply_ = ApplyUser(apply_id=uuid, event=event, apply_user=apply_user, total_price=total_price, remarks=remarks)
+        apply_ = ApplyUser(apply_id=uuid, event=event, apply_user=apply_user, total_price=int(total_price) + event.eventsdetail.base_price, remarks=remarks)
         
 
         apply_types_list = []

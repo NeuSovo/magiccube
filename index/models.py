@@ -22,7 +22,7 @@ class News(models.Model):
     create_user = models.CharField(verbose_name="播报员", max_length=30)
     is_top = models.IntegerField(
         verbose_name='是否置顶', default=0, choices=is_top_choices)
-    news_url = models.URLField(verbose_name="链接")
+    news_url = models.URLField(verbose_name="链接", null=True, blank=True)
 
 
 class HotVideo(models.Model):
@@ -45,7 +45,7 @@ class LunBo(models.Model):
         ordering = ['-id']
 
     def __str__(self):
-        return self.title
+        return self.title or '没有标题'
     
     title = models.CharField(verbose_name='标题 可为空', max_length=50, null=True, blank=True)
     img = models.ImageField(verbose_name='图片', default='img/demo.jpg', upload_to="img")
