@@ -32,10 +32,13 @@ class EventType(models.Model):
         verbose_name = "赛事类型"
         verbose_name_plural = "赛事类型"
 
+    event_type_choices = ((0, '魔方赛事'), (1, '纸飞机'), (2, '数独'), (3, '其他'))
+
     def __str__(self):
-        return self.type  # return ','.join(['类型:' + str(self.type), '资格线:' + str(self.lines), '项目价格:' + str(self.price)])
+        return self.type + ':' + self.event_type_choices[self.event_type][1]  # return ','.join(['类型:' + str(self.type), '资格线:' + str(self.lines), '项目价格:' + str(self.price)])
 
     type = models.CharField(verbose_name="类型", max_length=50)
+    event_type = models.IntegerField(verbose_name='所属赛事', choices=event_type_choices, default=0)
 
 
 class Events(models.Model):

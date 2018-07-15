@@ -112,7 +112,7 @@ def get_event_filter_view(request):
     res = dict()
     all_project = EventProject.objects.all()
     all_province = EventProvince.objects.all()
-    all_type = EventType.objects.all()
+    all_type = EventType.objects.filter(event_type=request.GET.get('etype', 0))
     res['all_year'] = [str(i) for i in reversed(
         range(2010, datetime.now().year + 1)) if Events.objects.filter(event_date__year=i).exists()]
     res['all_project'] = serializer(all_project)
