@@ -107,15 +107,15 @@ class UserProfile(models.Model):
     # 待定
 
     def update(self, **kwagrs):
-        self.username = kwagrs.get('username', '')
-        self.sex = kwagrs.get('sex', '')
-        self.birthday = kwagrs.get('birthday', '')
-        self.phone = kwagrs.get('phone', 0)
-        self.country = kwagrs.get('country', '')
-        self.province = kwagrs.get('province', '')
-        self.city = kwagrs.get('city', '')
-        self.paperwork_type = kwagrs.get('paperwork_type', '')
-        self.paperwork_id = kwagrs.get('paperwork_id', 0)
+        self.username = kwagrs.get('username') or ''
+        self.sex = kwagrs.get('sex') or ''
+        self.birthday = kwagrs.get('birthday') or ''
+        self.phone = kwagrs.get('phone') or 0
+        self.country = kwagrs.get('country') or ''
+        self.province = kwagrs.get('province') or ''
+        self.city = kwagrs.get('city') or ''
+        self.paperwork_type = kwagrs.get('paperwork_type') or ''
+        self.paperwork_id = kwagrs.get('paperwork_id') or 0
         self.save()
 
 
