@@ -79,6 +79,8 @@ class UserProfile(models.Model):
     class Meta:
         verbose_name = "用户详情"
         verbose_name_plural = "用户详情"
+        ordering = ['username']
+
 
     def __str__(self):
         return self.user.email

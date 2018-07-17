@@ -3,6 +3,7 @@ import json
 import datetime
 from celery.decorators import task
 from django.http import JsonResponse
+from django.db.models import Func, Value
 from django.core.mail import EmailMessage
 from .apps import email_check_template, email_forget_template
 from .models import User
@@ -111,3 +112,14 @@ class CheckToken(object):
         user_id = payload['user_id']
 
         return User.get_user_by_id(user_id)
+
+
+class Convert(Func):
+    def __init__(self, expression, transcoding_name, **extra):
+         super(Convert, self).__init__(
+             expression, transcoding_name=Value(transcoding_name), **extra)
+
+    def as_mysql(self, compiler, connection):
+        self.function = 'CONVERT'
+        self.template = '%(function)s(%(expressions)s AS %(transcoding_name)s)'
+        return super(Conver, self).as_sql(compiler, connection)
