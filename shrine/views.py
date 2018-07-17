@@ -15,7 +15,7 @@ from rest_framework.parsers import JSONParser
 
 
 class UserRecode(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.get_queryset().order_by('id')
+    queryset = User.objects.get_queryset().order_by('userprofile__username')
     serializer_class = UserRecodeX
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filter_class = UserFilter
