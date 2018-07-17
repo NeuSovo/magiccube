@@ -104,7 +104,7 @@ class ApplyUserAdmin(admin.ModelAdmin):
     list_display = ('create_time', 'get_apply_user', 'get_event_name', 'total_price', 'checked_status', 'is_check',)
     list_editable = ('is_check',)
     list_filter = ('is_check', ApplyEventsFilter)
-    readonly_fields = ('create_time', 'apply_id')
+    readonly_fields = ('apply_id',)
 
     search_fields = ('apply_user__email',)
 

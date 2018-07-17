@@ -141,7 +141,7 @@ def get_event_type_view(request, event_id):
     res['type'] = all_type
     res['can_apply_count'] = int(
         event.eventsdetail.apply_count) - len(event.applyuser_set.filter(is_check=1))
-
+    res['base_price'] = event.eventsdetail.base_price
     return parse_info(res)
 
 

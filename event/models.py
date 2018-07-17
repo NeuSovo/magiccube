@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.utils.html import format_html
 from simditor.fields import RichTextField
 from utils.models import *
@@ -94,7 +95,7 @@ class EventsDetail(models.Model):
 
     event = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
     evnet_org = models.CharField(verbose_name='主办方、代表', max_length=20)
-    base_price = models.IntegerField(verbose_name='基础报名费', default=0)
+    base_price = models.IntegerField(verbose_name='基础报名费', default=150)
     evnet_represent = models.CharField(verbose_name='项目及参赛资格', max_length=100)
     apply_count = models.IntegerField(verbose_name='报名人数限制', default=0)
     event_apply_begin_time = models.DateTimeField(verbose_name='报名起始时间')
@@ -173,7 +174,7 @@ class ApplyUser(models.Model):
     apply_id = models.UUIDField(primary_key=True, verbose_name='报名id')
     event = models.ForeignKey(Events, on_delete=models.SET(-1), verbose_name='报名赛事')
     apply_user = models.ForeignKey(User, on_delete=models.SET(-1), verbose_name='报名用户')
-    create_time = models.DateTimeField(auto_now_add=True)
+    create_time = models.DateField(default=timezone.now)
     total_price = models.IntegerField(null=True, verbose_name='总价(自动加上赛事基础报名费)')
     remarks = models.CharField(max_length=155, null=True, blank=True, verbose_name='留言')
     is_check = models.IntegerField(default=0, choices=[[0, '未缴费'], [1, '已缴费']], verbose_name='是否缴费')
