@@ -77,7 +77,7 @@ class EventTypeDetail(models.Model):
         verbose_name_plural = "赛事所有类型"
 
     def __str__(self):
-        return self.type.type
+        return str(self.type)
 
     type = models.ForeignKey(EventType, on_delete=models.CASCADE, verbose_name='类型')
     lines = models.CharField(verbose_name='资格线', max_length=50)
@@ -91,7 +91,7 @@ class EventsDetail(models.Model):
         verbose_name_plural = "赛事详情"
 
     def __str__(self):
-        return ''
+        return self.event.name
 
     event = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
     evnet_org = models.CharField(verbose_name='主办方、代表', max_length=20)

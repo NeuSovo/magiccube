@@ -10,22 +10,27 @@ from django.http import HttpResponse
 
 class EventsRulesAdmin(admin.StackedInline):
     model = EventRules
+    extra = 1
 
 
 class EventsTrafficAdmin(admin.StackedInline):
     model = EventTraffic
+    extra = 1
 
 
 class EventsScAdmin(admin.StackedInline):
     model = EventSc
+    extra = 1
 
 
 class EventsDetailAdmin(admin.StackedInline):
     model = EventsDetail
+    extra = 1
 
 
 class EventsTypeAdmin(admin.TabularInline):
     model = EventTypeDetail
+    extra = 1
 
 
 @admin.register(Events)
@@ -53,7 +58,16 @@ class ApplyEventsFilter(admin.SimpleListFilter):
 
 
 class AppplyUserTypesAdmin(admin.TabularInline):
+    # raw_id_fields = ('apply_type',)
     model = ApplyUserTypes
+    extra = 1
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        print (type(self.model))
+        if not self.has_change_permission(request):
+            queryset = queryset.none()
+        return queryset
 
 
 @admin.register(ApplyUser)

@@ -187,9 +187,9 @@ class UpdateUserAvatarView(JsonResponseMixin, CheckToken, View):
         try:
             self.user.userprofile.avatar = request.FILES['img']
             self.user.userprofile.save()
-            return self.render_to_response({'msg': 'success'})
+            return self.render_to_response({'msg': 'success', 'avatar': self.user.userprofile.avatar})
         except Exception as e:
-            return self.render_to_response({'msg': 'failed'})
+            return self.render_to_response({'msg': 'failed:\t' + str(e)})
 
 
 def check_email_view(request):
