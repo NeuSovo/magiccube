@@ -64,8 +64,8 @@ class Events(models.Model):
     evnet_weight = models.IntegerField(verbose_name='优先级', choices=evnet_weight_choices, default=3)
     event_type = models.IntegerField(verbose_name='赛事类别', choices=event_type_choices, default=0)
 
-    event_province = models.ForeignKey(EventProvince, on_delete=models.SET(-1), verbose_name='赛事省份')
-    event_project = models.ForeignKey(EventProject, on_delete=models.SET(-1), verbose_name='赛事项目')
+    event_province = models.ForeignKey(EventProvince, on_delete=models.SET_NULL, verbose_name='赛事省份',null=True)
+    event_project = models.ForeignKey(EventProject, on_delete=models.SET_NULL, verbose_name='赛事项目', null=True)
 
     def eventProvince(self):
         return self.event_province.province

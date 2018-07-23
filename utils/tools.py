@@ -1,5 +1,6 @@
 import jwt
 import json
+import redis
 import datetime
 from celery.decorators import task
 from django.http import JsonResponse
@@ -8,22 +9,29 @@ from django.core.mail import EmailMessage
 from .apps import email_check_template, email_forget_template
 from .models import User
 
+send_email_pool = redis.StrictRedis(host='127.0.0.1', port=6379, db=1)
 FRONTEND_URL = 'http://www.chao6hui.cn/views/index.html'
 BACKEND_URL = 'https://lab.zxh326.cn/api/'
 
-@task
-def send_check_email(uid, username, email, fail_silently=False):
+@task(bind=True, max_retries=3, default_retry_delay=10)
+def send_check_email(self, uid, username, email, fail_silently=False):
     subject = '【顺时针魔方】邮箱验证'
     to_list = [email]
     token = BACKEND_URL + "auth/checkemail?token="+ gen_jwt(uid, username, 'checkemail')
     html_content = email_check_template.format(username=username, token=token)
-    msg = EmailMessage(subject, html_content, None, to_list)
-    msg.content_subtype = "html"
-    msg.send(fail_silently)
+    try:
+        msg = EmailMessage(subject, html_content, None, to_list)
+        msg.content_subtype = "html"
+        msg.send(fail_silently)
+        send_email_pool.set('sendemail:{}'.format(email), 1, ex=180)
+    except Exception as e:
+        raise self.retry(exc=e)
+
+    return email
 
 
-@task
-def forget_password_email(email, fail_silently=False):
+@task(bind=True, max_retries=3, default_retry_delay=10)
+def forget_password_email(self, email, fail_silently=False):
     subject = '【顺时针魔方】重置密码'
     uid = User.get_user_by_email(email)
     if not uid:
@@ -32,9 +40,14 @@ def forget_password_email(email, fail_silently=False):
     to_list = [email]
     token = FRONTEND_URL +"?token=" + gen_jwt(uid, email, 'resetpassword', 0.17)
     html_content = email_forget_template.format(email=email, token=token)
-    msg = EmailMessage(subject, html_content, None, to_list)
-    msg.content_subtype = "html"
-    msg.send(fail_silently)
+    try:
+        if not send_email_pool.exists('sendemail:{}'.format(email)):
+            msg = EmailMessage(subject, html_content, None, to_list)
+            msg.content_subtype = "html"
+            msg.send(fail_silently)
+            send_email_pool.set('sendemail:{}'.format(email), 1, ex=180)
+    except Exception as e:
+        raise self.retry(exc=e)
     return email
 
 

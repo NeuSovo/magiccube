@@ -16,7 +16,7 @@ class UserParagraphView(MultipleJsonResponseMixin, ListView):
         search = self.request.GET.get('search', None)
         queryset = super(UserParagraphView, self).get_queryset()
         if search:
-            queryset = queryset.filter(Q(paragraph__contains=search) | Q(user__username__contains=search) | Q(user__country__contains=search))
+            queryset = queryset.filter(Q(paragraph__contains=search) | Q(username__contains=search) | Q(country__contains=search))
 
         return queryset
 

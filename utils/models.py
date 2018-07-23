@@ -14,12 +14,12 @@ class User(models.Model):
     def username(self):
         return self.userprofile.username
 
-    email = models.CharField(verbose_name='邮箱', max_length=100, unique=True)
+    email = models.EmailField(verbose_name='邮箱', max_length=100, unique=True)
     password = models.TextField(verbose_name='密码')
     is_email_check = models.IntegerField(verbose_name='邮箱是否验证', choices=[
                                          [0, '未验证'], [1, '已发送邮件'], [2, '已验证']])
     reg_date = models.DateTimeField(auto_now_add=True, verbose_name="注册时间")
-
+    
     @staticmethod
     def is_exist_user(email):
         user = User.get_user_by_email(email)
@@ -137,8 +137,6 @@ class UserFirst(models.Model):
         verbose_name = "用户首选项目"
         verbose_name_plural = "用户首选项目s"
 
-    def __str__(self):
-        pass
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='用户')
     project = models.CharField(verbose_name='首选项目', null=True, blank=True, max_length=30)

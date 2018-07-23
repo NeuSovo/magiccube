@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import HttpResponseRedirect, render
 from django.views.generic import (CreateView, FormView, ListView, UpdateView,
                                   View)
+from django.core.validators import validate_email
 from dss.Mixin import (FormJsonResponseMixin, JsonResponseMixin,
                        MultipleJsonResponseMixin)
 from dss.Serializer import serializer
@@ -24,6 +25,10 @@ class RegUserView(FormJsonResponseMixin, CreateView):
         email = body.get('email')
         username = body.get('username')
         password = body.get('password')
+        try:
+            validate_email(email)
+        except Exception as e:
+            return self.render_to_response({'msg': '邮箱格式不符'})
 
         is_exist_user = User.get_user_by_email(email)
         if is_exist_user:
@@ -31,7 +36,8 @@ class RegUserView(FormJsonResponseMixin, CreateView):
             return self.render_to_response({'msg': '已注册', 'email_status': is_exist_user.is_email_check})
 
         user = User.reg_user(email=email, username=username, password=password)
-        send_check_email.delay(uid=user.id, username=username, email=email)
+        if not send_email_pool.exists('sendemail:{}'.format(email)):
+            send_check_email.delay(uid=user.id, username=username, email=email)
         self.resp['user_obj'] = serializer(
             user, exclude_attr=('password', 'id', 'reg_date'))
         self.resp['msg'] = "已向邮箱 {} 发送一封确认邮件".format(email)
@@ -144,8 +150,10 @@ class ResetPasswordView(JsonResponseMixin, CheckToken, View):
             print (jwt_payload)
             user_info = de_jwt(jwt_payload)
             user = User.get_user_by_id(user_info['user_id'])
+            if user.email != user_info.get('user_email'):
+                raise Exception("email error")
         except Exception as e:
-            return parse_info({'msg': '连接可能失效或者过期'})
+            return parse_info({'msg': '连接可能失效或者过期 {}'.format(str(e))})
 
         if request.GET.get('password'):
             user.password = make_password(request.GET.get('password'))
@@ -219,8 +227,9 @@ def check_email_view(request):
 def forget_password_view(request):
     u_email = request.POST.get('email')
     if User.is_exist_user(u_email):
-        forget_password_email.delay(u_email)
-        return parse_info({'msg': '已向邮箱 {}发送一个修改链接'.format(u_email)})
+        if not send_email_pool.exists('sendemail:{}'.format(u_email)):
+            forget_password_email.delay(u_email)
+        return parse_info({'msg': '已向邮箱 {}发送一个修改链接，如果未收到可尝试在三分钟后重新提交'.format(u_email)})
 
     return parse_info({'msg': '邮箱不存在'})
 
@@ -237,3 +246,14 @@ def get_user_profile_view(request, user_id):
     res['record'] = serializer(user.userprofile.authority_set.all(), exclude_attr=('username','username_id','events_id','eventType_id',), datetime_format='string')
 
     return parse_info(res)
+
+
+def resend_reg_email_view(request):
+    email = request.GET.get('email')
+    user = User.get_user_by_email(email)
+    if not user:
+        return parse_info({'msg': '邮箱不存在'})
+    if not send_email_pool.exists('sendemail:{}'.format(email)):
+        send_check_email.delay(uid=user.id, username=user.userprofile.username, email=email)
+
+    return parse_info({'msg': "已向邮箱 {} 发送一封确认邮件".format(email)})
