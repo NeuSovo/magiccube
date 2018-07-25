@@ -33,7 +33,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.exmail.qq.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'i@zxh326.cn'
-EMAIL_HOST_PASSWORD = 'Zhang@326'
+EMAIL_HOST_PASSWORD = ''
 EMAIL_SUBJECT_PREFIX = 'website'
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = SERVER_EMAIL = EMAIL_HOST_USER
