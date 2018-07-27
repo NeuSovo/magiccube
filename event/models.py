@@ -57,7 +57,7 @@ class Events(models.Model):
         return self.name
 
     create_date = models.DateTimeField(auto_now_add=True, verbose_name="添加时间")
-    event_date = models.DateTimeField(verbose_name="赛事时间")
+    event_date = models.DateField(verbose_name="赛事时间")
     name = models.CharField(verbose_name="赛事名称", max_length=50)
     location = models.CharField(verbose_name="位置", max_length=50)
     country = models.CharField(verbose_name='国家', max_length=100, default="中国")
