@@ -15,7 +15,7 @@ BACKEND_URL = 'https://lab.zxh326.cn/api/'
 
 @task(bind=True, max_retries=3, default_retry_delay=10)
 def send_check_email(self, uid, username, email, fail_silently=False):
-    subject = '【顺时针魔方】邮箱验证'
+    subject = '【SSZ国际魔方联赛】邮箱验证'
     to_list = [email]
     token = BACKEND_URL + "auth/checkemail?token="+ gen_jwt(uid, username, 'checkemail')
     html_content = email_check_template.format(username=username, token=token)
@@ -32,7 +32,7 @@ def send_check_email(self, uid, username, email, fail_silently=False):
 
 @task(bind=True, max_retries=3, default_retry_delay=10)
 def forget_password_email(self, email, fail_silently=False):
-    subject = '【顺时针魔方】重置密码'
+    subject = '【SSZ国际魔方联赛】重置密码'
     uid = User.get_user_by_email(email)
     if not uid:
         return 

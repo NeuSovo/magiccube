@@ -1,5 +1,10 @@
 from django.urls import path
 from .views import *
+from weixin import Weixin, WeixinError
+
+
+config = dict(WEIXIN_APP_ID='wxb4ded851965b77eb', WEIXIN_APP_SECRET='5c4a6e4a8f8aa560dd8c3eff6536576f')
+weixin = Weixin(config)
 
 urlpatterns = [
     path('auth/reg', RegUserView.as_view()),
@@ -14,5 +19,7 @@ urlpatterns = [
     path('user/picture', UserPictureView.as_view()),
     path('user/resetpassword', ResetPasswordView.as_view()),
     path('user/avatar', UpdateUserAvatarView.as_view()),
-    path('user/first', UserFirstView.as_view())
+    path('user/first', UserFirstView.as_view()),
+
+    path('wx/', weixin.django_view_func())
 ]

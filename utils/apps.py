@@ -14,7 +14,7 @@ email_check_template = '''
                 </td>
             </tr>
             <tr>
-                <td style="padding:10px 0;text-indent:25px;"><b>欢迎加入顺时针魔方!</b></td>
+                <td style="padding:10px 0;text-indent:25px;"><b>欢迎加入SSZ国际魔方联赛!</b></td>
             </tr>
             <tr>
                 <td style="padding:10px 0;text-indent:25px;line-height: 10px;">
@@ -49,7 +49,7 @@ email_forget_template = '''
                 </td>
             </tr>
             <tr>
-                <td style="padding:10px 0;text-indent:25px;"><b>欢迎使用顺时针魔方!</b></td>
+                <td style="padding:10px 0;text-indent:25px;"><b>欢迎使用SSZ国际魔方联赛!</b></td>
             </tr>
             <tr>
                 <td style="padding:10px 0;text-indent:25px;line-height: 10px;">
