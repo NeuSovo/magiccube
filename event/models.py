@@ -109,7 +109,7 @@ class EventRules(models.Model):
         verbose_name_plural = "赛事规则"
 
     event = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
-    event_rules = RichTextField(verbose_name='规则', null=True, blank=True)
+    event_rules = RichTextField(verbose_name='规则', null=True, blank=True, default='无')
 
 
 class EventTraffic(models.Model):
@@ -118,7 +118,7 @@ class EventTraffic(models.Model):
         verbose_name_plural = "赛事交通"
 
     event = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
-    event_traffic = RichTextField(verbose_name='赛事交通', null=True, blank=True)
+    event_traffic = RichTextField(verbose_name='赛事交通', null=True, blank=True, default='无')
     lat = models.DecimalField(verbose_name='经纬度', max_digits=9, decimal_places=6, null=True, blank=True, default=116.404)
     lng = models.DecimalField(verbose_name='纬度', max_digits=9, decimal_places=6, null=True, blank=True, default=39.915)
 
@@ -129,7 +129,7 @@ class EventSc(models.Model):
         verbose_name_plural = "赛事赛程"
 
     event = models.OneToOneField(Events, on_delete=models.CASCADE, primary_key=True)
-    event_sc = RichTextField(verbose_name='赛程', null=True, blank=True)
+    event_sc = RichTextField(verbose_name='赛程', null=True, blank=True, default='无')
 
 
 class ApplyUser(models.Model):
