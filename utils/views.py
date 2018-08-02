@@ -261,15 +261,15 @@ def resend_reg_email_view(request):
 
 
 def wx_login_view(request):
-    code = request.GET.get('code')
+    code = request.GET.get('code') or request.POST.get('code')
     we = WeChatSdk(code=code)
     we_user_token = we.get_access_token()
     if 'errcode' in we_user_token:
         return parse_info(we_user_token)
-    user_info = we_user_token.get_user_info(access_token=we_user_token['access_token'], openid=we_user_token['openid'])
-    if WeChatUser.objects.filter(openid=user_info['openid']).exists():
+    user_info = we.get_user_info(access_token=we_user_token['access_token'], openid=we_user_token['openid'])
+    if WeChatUser.objects.filter(openid=we_user_token['openid']).exists():
         we_user = WeChatUser.objects.get(openid=user_info['openid'])
-        we_user.update_profile(**user_info)
+        we_user.update_profile(access_token=we_user_token['access_token'], refresh_token=we_user_token['refresh_token'], **user_info)
         resp = {}
         access_token = gen_jwt(
             user_id=we_user.user.id, user_email=we_user.user.email, do="token", exp_hours=24 * 7)
@@ -279,9 +279,9 @@ def wx_login_view(request):
         resp['expires_in'] = 3600 * 24 * 7
         return parse_info(resp)
 
-    user = User.reg_user('空', '填写你的姓名', 'default_password')
+    user = User.reg_user('微信用户', '填写你的姓名', 'default_password')
     we_user = WeChatUser(user=user)
-    we_user.update_profile(**user_info)
+    we_user.update_profile(access_token=we_user_token['access_token'], refresh_token=we_user_token['refresh_token'], **user_info)
     resp = {}
     access_token = gen_jwt(
         user_id=we_user.user.id, user_email=we_user.user.email, do="token", exp_hours=24 * 7)
@@ -289,3 +289,6 @@ def wx_login_view(request):
         we_user.user.userprofile, exclude_attr=('password', 'id', 'reg_date'))
     resp['access_token'] = access_token
     resp['expires_in'] = 3600 * 24 * 7
+    
+    return parse_info(resp)
+

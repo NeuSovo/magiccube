@@ -155,15 +155,16 @@ class WeChatUser(models.Model):
 
 
     def update_profile(self, *args, **kwagrs):
-        self.user.useprofile.nick_name = kwagrs.get['nick_name']
-        self.user.useprofile.sex = '男' if kwagrs.get['sex'] == 1 else '女'
-        self.user.useprofile.country = kwagrs.get('country')
-        self.user.useprofile.province = kwagrs.get('province')
-        self.user.useprofile.city = kwagrs.get('city')
+        self.user.userprofile.nick_name = kwagrs.get('nick_name')
+        self.user.userprofile.sex = '男' if kwagrs.get('sex') == 1 else '女'
+        self.user.userprofile.country = kwagrs.get('country')
+        self.user.userprofile.province = kwagrs.get('province')
+        self.user.userprofile.city = kwagrs.get('city')
         # self.user.userprofile.avatar = requests.get(kwagrs.get('headimgurl')) # pass
-        self.user.useprofile.save()
-        self.refresh_token = kwagrs.get('update_profile')
-        self.access_token = kwagrs.get('update_profile')
-        self.unionid = kwagrs.get('update_profile')
+        self.user.userprofile.save()
+        self.openid = kwagrs.get('openid')
+        self.refresh_token = kwagrs.get('refresh_token')
+        self.access_token = kwagrs.get('access_token')
+        self.unionid = kwagrs.get('unionid')
         self.save()
 

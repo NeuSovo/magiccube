@@ -132,3 +132,5 @@ admin.site.register(EventProject)
 
 admin.site.site_header = '项目管理中心'
 admin.site.site_title = '项目管理中心'
+admin.site.site_url = 'http://sszcube.com'
+
