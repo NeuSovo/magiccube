@@ -1,3 +1,4 @@
+import requests
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 # Create your models here.
@@ -14,7 +15,8 @@ class User(models.Model):
     def username(self):
         return self.userprofile.username
 
-    email = models.EmailField(verbose_name='邮箱', max_length=100, unique=True)
+    # 为了WeChat User 改为null
+    email = models.EmailField(verbose_name='邮箱', max_length=100, null=True)
     password = models.TextField(verbose_name='密码')
     is_email_check = models.IntegerField(verbose_name='邮箱是否验证', choices=[
                                          [0, '未验证'], [1, '已发送邮件'], [2, '已验证']])
@@ -88,11 +90,12 @@ class UserProfile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)
     username = models.CharField(verbose_name='姓名', max_length=100)
+    nick_name = models.CharField(verbose_name='微信昵称', null=True, blank=True, max_length=120)
     avatar = models.ImageField(verbose_name='头像', default='none', upload_to="avatar")
     sex = models.CharField(max_length=20, null=True,
                            blank=True, verbose_name='性别')
     birthday = models.CharField(
-        max_length=20, null=True, blank=True, verbose_name='国家')
+        max_length=20, null=True, blank=True, verbose_name='生日')
     phone = models.BigIntegerField(null=True, blank=True, verbose_name='电话')
     country = models.CharField(
         max_length=20, null=True, blank=True, verbose_name='地区')
@@ -141,4 +144,26 @@ class UserFirst(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='用户')
     project = models.CharField(verbose_name='首选项目', null=True, blank=True, max_length=30)
     
-    
+
+class WeChatUser(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='用户')
+    openid = models.CharField(verbose_name='微信id', max_length=50, null=True, blank=True)
+    refresh_token = models.CharField(verbose_name='微信验证token', max_length=120, null=True, blank=True)
+    access_token = models.CharField(verbose_name='token', max_length=120)
+    unionid = models.CharField(verbose_name='单应用唯一id',null=True, max_length=120)
+
+
+    def update_profile(self, *args, **kwagrs):
+        self.user.useprofile.nick_name = kwagrs.get['nick_name']
+        self.user.useprofile.sex = '男' if kwagrs.get['sex'] == 1 else '女'
+        self.user.useprofile.country = kwagrs.get('country')
+        self.user.useprofile.province = kwagrs.get('province')
+        self.user.useprofile.city = kwagrs.get('city')
+        # self.user.userprofile.avatar = requests.get(kwagrs.get('headimgurl')) # pass
+        self.user.useprofile.save()
+        self.refresh_token = kwagrs.get('update_profile')
+        self.access_token = kwagrs.get('update_profile')
+        self.unionid = kwagrs.get('update_profile')
+        self.save()
+

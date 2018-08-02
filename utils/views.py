@@ -1,3 +1,4 @@
+import requests
 from django.http import QueryDict, Http404
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import HttpResponseRedirect, render
@@ -257,3 +258,34 @@ def resend_reg_email_view(request):
         send_check_email.delay(uid=user.id, username=user.userprofile.username, email=email)
 
     return parse_info({'msg': "已向邮箱 {} 发送一封确认邮件".format(email)})
+
+
+def wx_login_view(request):
+    code = request.GET.get('code')
+    we = WeChatSdk(code=code)
+    we_user_token = we.get_access_token()
+    if 'errcode' in we_user_token:
+        return parse_info(we_user_token)
+    user_info = we_user_token.get_user_info(access_token=we_user_token['access_token'], openid=we_user_token['openid'])
+    if WeChatUser.objects.filter(openid=user_info['openid']).exists():
+        we_user = WeChatUser.objects.get(openid=user_info['openid'])
+        we_user.update_profile(**user_info)
+        resp = {}
+        access_token = gen_jwt(
+            user_id=we_user.user.id, user_email=we_user.user.email, do="token", exp_hours=24 * 7)
+        resp['profile'] = serializer(
+            we_user.user.userprofile, exclude_attr=('password', 'id', 'reg_date'))
+        resp['access_token'] = access_token
+        resp['expires_in'] = 3600 * 24 * 7
+        return parse_info(resp)
+
+    user = User.reg_user('空', '填写你的姓名', 'default_password')
+    we_user = WeChatUser(user=user)
+    we_user.update_profile(**user_info)
+    resp = {}
+    access_token = gen_jwt(
+        user_id=we_user.user.id, user_email=we_user.user.email, do="token", exp_hours=24 * 7)
+    resp['profile'] = serializer(
+        we_user.user.userprofile, exclude_attr=('password', 'id', 'reg_date'))
+    resp['access_token'] = access_token
+    resp['expires_in'] = 3600 * 24 * 7

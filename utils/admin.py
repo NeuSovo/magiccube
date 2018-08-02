@@ -30,6 +30,6 @@ class UserAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ('password', )
+            return ('password', 'openid', 'refresh_token')
         else:
-            return ()
+            return ('openid', 'refresh_token')
