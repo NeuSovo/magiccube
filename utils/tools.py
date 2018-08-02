@@ -10,8 +10,8 @@ from .apps import email_check_template, email_forget_template
 from .models import User
 
 send_email_pool = redis.StrictRedis(host='127.0.0.1', port=6379, db=1)
-FRONTEND_URL = 'http://www.chao6hui.cn/views/index.html'
-BACKEND_URL = 'https://lab.zxh326.cn/api/'
+FRONTEND_URL = 'http://www.sszcube.com/index.html'
+BACKEND_URL = 'http://api.sszcube.com/api/'
 
 @task(bind=True, max_retries=3, default_retry_delay=10)
 def send_check_email(self, uid, username, email, fail_silently=False):
