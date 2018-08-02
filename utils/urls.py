@@ -8,6 +8,8 @@ urlpatterns = [
     path('auth/forget', forget_password_view),
     path('auth/resendemail', resend_reg_email_view),
 
+    path('auth/wxlogin', wx_login_view),
+
     path('user/profile', UserProfileView.as_view()),
     path('user/profile/<str:user_id>', get_user_profile_view),
     path('user/getapply', GetUserApplyView.as_view()),

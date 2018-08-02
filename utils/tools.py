@@ -1,6 +1,7 @@
 import jwt
 import json
 import redis
+import requests
 import datetime
 from celery.decorators import task
 from django.http import JsonResponse
@@ -136,3 +137,44 @@ class Convert(Func):
         self.function = 'CONVERT'
         self.template = '%(function)s(%(expressions)s using %(transcoding_name)s)'
         return super(Convert, self).as_sql(compiler, connection)
+
+
+class WeChatSdk():
+    AppID = 'wx98cac167c1ffb7de'
+    AppSecret = ''
+
+    def __init__(self, code=None):
+        self.code = code
+
+    def get_access_token(self):
+        url = 'https://api.weixin.qq.com/sns/oauth2/access_token'
+
+        params = {
+            'appid': self.AppID,
+            'secret': self.AppSecret,
+            'code': self.code,
+            'grant_type': 'authorization_code'
+        }
+
+        info = requests.get(url, params=params)
+        return info.json()
+
+    def get_user_info(self, access_token, openid):
+        url = 'https://api.weixin.qq.com/sns/userinfo'
+        params = {
+            'access_token': access_token,
+            'openid': openid,
+            'lang': 'zh_CN'
+        }
+        info = requests.get(url, params=params)
+        return info.json()
+
+    def refresh_token(self, access_token, openid):
+        url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token'
+        params = {
+            'appid  ': self.AppID,
+            'refresh_token': refresh_token,
+            'grant_type': 'refresh_token'
+        }
+        info = requests.get(url, params=params)
+        return info.json()
