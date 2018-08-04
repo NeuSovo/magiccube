@@ -10,7 +10,7 @@ class User(models.Model):
         verbose_name_plural = "用户信息"
 
     def __str__(self):
-        return self.email
+        return 'id:' + str(self.id) + ':' + self.email
 
     def username(self):
         return self.userprofile.username
@@ -85,7 +85,7 @@ class UserProfile(models.Model):
 
 
     def __str__(self):
-        return self.user.email
+        return str(self.user)
 
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)

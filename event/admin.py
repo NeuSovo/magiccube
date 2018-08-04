@@ -111,9 +111,9 @@ class ApplyUserAdmin(admin.ModelAdmin):
 
     # SaveExecl.short_description = "导出excel"
     actions = [export_as_csv_action("导出excel",
-                                    fields=['create_time', 'apply_user', 'get_event_name', 'total_price', 'remarks',
+                                    fields=['create_time','get_apply_user_id', 'get_apply_user', 'get_event_name', 'total_price', 'remarks',
                                             'get_apply_types', 'get_apply_status'],
-                                    header=['报名时间', '报名者邮箱', '报名赛事', '总价', '留言', '报名赛事类型', '是否缴费'])]
+                                    header=['报名时间','报名者id', '报名者邮箱', '报名赛事', '总价', '留言', '报名赛事类型', '是否缴费'])]
 
     list_display = ('create_time', 'get_apply_user', 'get_event_name', 'total_price', 'checked_status', 'is_check',)
     list_editable = ('is_check',)

@@ -140,6 +140,9 @@ class ApplyUser(models.Model):
 
     def __str__(self):
         return ""
+      
+    def get_apply_user_id(self):
+        return self.apply_user.id
 
     def get_apply_user(self):
         return self.apply_user.email
