@@ -38,7 +38,7 @@ class EventsAdmin(admin.ModelAdmin):
     '''
         Admin View for Events
     '''
-    list_display = ('event_date', 'name', 'location', 'evnet_weight', 'event_province', 'event_project')
+    list_display = ('event_date', 'name', 'location', 'evnet_weight', 'event_province',)
     list_filter = ('evnet_weight', 'event_date', 'event_type')
     inlines = [EventsDetailAdmin, 
                 EventsTypeAdmin, EventsRulesAdmin, EventsTrafficAdmin,
@@ -128,7 +128,6 @@ class ApplyUserAdmin(admin.ModelAdmin):
 # admin.site.register(UserHistory)
 admin.site.register(EventType)
 admin.site.register(EventProvince)
-admin.site.register(EventProject)
 
 admin.site.site_header = '项目管理中心'
 admin.site.site_title = '项目管理中心'

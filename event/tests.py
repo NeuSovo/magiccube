@@ -8,13 +8,11 @@ class EventsTests(TestCase):
     def setUp(self):
         self.eventprovince = EventProvince(province='测试省')
         self.eventprovince.save()
-        self.eventproject = EventProject(project="测试项目")
-        self.eventproject.save()
         self.eventtype = EventType(type="测试类型")
         self.eventtype.save()
         self.event = Events(name="测试赛事", location='无',
                             event_date = datetime.now(),
-                            event_province=self.eventprovince, event_project=self.eventproject)
+                            event_province=self.eventprovince)
         self.event.save()
         self.eventtypedetail = EventTypeDetail(
             type=self.eventtype, lines="1", price="test", event=self.event)
@@ -79,13 +77,11 @@ class ApplyTestCase(TestCase):
     def setUp(self):
         self.eventprovince = EventProvince(province='测试省')
         self.eventprovince.save()
-        self.eventproject = EventProject(project="测试项目")
-        self.eventproject.save()
         self.eventtype = EventType(type="测试类型")
         self.eventtype.save()
         self.event = Events(name="测试赛事", location='无',
                             event_date = datetime.now(),
-                            event_province=self.eventprovince, event_project=self.eventproject)
+                            event_province=self.eventprovince)
         self.event.save()
         self.eventtypedetail = EventTypeDetail(
             type=self.eventtype, lines="1", price="test", event=self.event)

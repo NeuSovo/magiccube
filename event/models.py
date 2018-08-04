@@ -5,16 +5,16 @@ from simditor.fields import RichTextField
 from utils.models import *
 
 
-class EventProject(models.Model):
-    class Meta:
-        verbose_name = "赛事项目"
-        verbose_name_plural = "赛事项目"
+# class EventProject(models.Model):
+#     class Meta:
+#         verbose_name = "赛事项目"
+#         verbose_name_plural = "赛事项目"
 
-    def __str__(self):
-        return self.project
+#     def __str__(self):
+#         return self.project
 
-    project = models.CharField(verbose_name="项目", max_length=50)
-    project_detail = RichTextField(verbose_name='项目介绍', null=True, blank=True)
+#     project = models.CharField(verbose_name="项目", max_length=50)
+#     project_detail = RichTextField(verbose_name='项目介绍', null=True, blank=True)
 
 
 class EventProvince(models.Model):
@@ -65,7 +65,6 @@ class Events(models.Model):
     event_type = models.IntegerField(verbose_name='赛事类别', choices=event_type_choices, default=0)
 
     event_province = models.ForeignKey(EventProvince, on_delete=models.SET_NULL, verbose_name='赛事省份',null=True)
-    event_project = models.ForeignKey(EventProject, on_delete=models.SET_NULL, verbose_name='赛事项目', null=True)
 
     def eventProvince(self):
         return self.event_province.province

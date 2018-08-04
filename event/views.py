@@ -22,7 +22,6 @@ class EventView(MultipleJsonResponseMixin, ListView):
         year = self.request.GET.get('year', None)
         type_ = self.request.GET.get('type', None)
         province = self.request.GET.get('province', None)
-        project = self.request.GET.get('project', None)
         etype = self.request.GET.get('etype', 0)
         search = self.request.GET.get('search', None)
 
@@ -30,8 +29,6 @@ class EventView(MultipleJsonResponseMixin, ListView):
             kwargs['event_date__year'] = year
         if province:
             kwargs['event_province_id'] = province
-        if project:
-            kwargs['event_project_id'] = project
         if type_:
             kwargs['eventtypedetail__type'] = type_
         if etype:
@@ -110,12 +107,10 @@ class ApplyUserView(FormJsonResponseMixin, CheckToken, FormView):
 
 def get_event_filter_view(request):
     res = dict()
-    all_project = EventProject.objects.all()
     all_province = EventProvince.objects.all()
     all_type = EventType.objects.filter(event_type=request.GET.get('etype', 0))
     res['all_year'] = [str(i) for i in reversed(
         range(2010, datetime.now().year + 1)) if Events.objects.filter(event_date__year=i).exists()]
-    res['all_project'] = serializer(all_project)
     res['all_province'] = serializer(all_province)
     res['all_type'] = serializer(all_type)
 
