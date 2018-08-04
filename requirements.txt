@@ -1,4 +1,4 @@
-django
+django==2.0.7
 anyjson
 git+https://github.com/zxh326/django-simple-serializer.git
 image
