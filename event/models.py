@@ -145,6 +145,12 @@ class ApplyUser(models.Model):
 
     def get_apply_user(self):
         return self.apply_user.email
+    
+    def get_apply_username(self):
+        return self.apply_user.userprofile.username
+    
+    def get_apply_userphone(self):
+      	return self.apply_user.userprofile.phone
 
     def get_event_name(self):
         verbose_name = '赛事名称'
