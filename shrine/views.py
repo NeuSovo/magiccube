@@ -45,9 +45,10 @@ class RankRecode(viewsets.ReadOnlyModelViewSet):
     def authority(self, area):
         type = EventType.objects.all()
         list = []
+        print (type)
         for i in type:
-            exists = Authority.objects.filter(eventType__type=i, events__country=area).exists()
-            data = Authority.objects.filter(eventType__type=i, events__country=area).order_by('single').first()
+            exists = Authority.objects.filter(eventType=i, events__country=area).exists()
+            data = Authority.objects.filter(eventType=i, events__country=area).order_by('single').first()
             if (exists):
                 serializer = RankRecodeX(data)
                 list.append(serializer.data)

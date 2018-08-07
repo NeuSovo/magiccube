@@ -57,3 +57,5 @@ class JlParagraph(models.Model):
     name = models.CharField(max_length=50, verbose_name="姓名")
     paragraph = models.CharField(max_length=100, verbose_name="级别")
     zs_img = models.ImageField(verbose_name='证书', default='none', upload_to="img")
+    zs_number = models.CharField(max_length=50, verbose_name="证书编号")
+

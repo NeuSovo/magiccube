@@ -175,7 +175,7 @@ class ApplyUser(models.Model):
 
     apply_id = models.UUIDField(primary_key=True, verbose_name='报名id')
     event = models.ForeignKey(Events, on_delete=models.SET(-1), verbose_name='报名赛事')
-    apply_user = models.ForeignKey(User, on_delete=models.SET(-1), verbose_name='报名用户')
+    apply_user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='报名用户')
     create_time = models.DateField(default=timezone.now)
     total_price = models.IntegerField(null=True, verbose_name='总价(自动加上赛事基础报名费)')
     remarks = models.CharField(max_length=155, null=True, blank=True, verbose_name='留言')
