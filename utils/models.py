@@ -155,11 +155,11 @@ class WeChatUser(models.Model):
 
 
     def update_profile(self, *args, **kwagrs):
-        self.user.userprofile.nick_name = kwagrs.get('nick_name')
+        self.user.userprofile.nick_name = kwagrs.get('nickname').encode('iso-8859-1').decode('utf-8')
         self.user.userprofile.sex = '男' if kwagrs.get('sex') == 1 else '女'
-        self.user.userprofile.country = kwagrs.get('country')
-        self.user.userprofile.province = kwagrs.get('province')
-        self.user.userprofile.city = kwagrs.get('city')
+        self.user.userprofile.country = kwagrs.get('country').encode('iso-8859-1').decode('utf-8')
+        self.user.userprofile.province = kwagrs.get('province').encode('iso-8859-1').decode('utf-8')
+        self.user.userprofile.city = kwagrs.get('city').encode('iso-8859-1').decode('utf-8')
         # self.user.userprofile.avatar = requests.get(kwagrs.get('headimgurl')) # pass
         self.user.userprofile.save()
         self.openid = kwagrs.get('openid')
