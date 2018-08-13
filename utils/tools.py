@@ -141,10 +141,16 @@ class Convert(Func):
 
 class WeChatSdk():
     AppID = 'wx98cac167c1ffb7de'
-    AppSecret = ''
+    AppSecret = 'b796fdd2b2f8a11b8927eef15da7b732'
+    
+    AppID_2 = 'wx5f57852a3cd5acdb'
+    AppSecret_2 = 'fb507edd042a7ca40c6c4e3c5fa25097'
 
-    def __init__(self, code=None):
+    def __init__(self, code=None, is_mp=False):
         self.code = code
+        if is_mp:
+            self.AppID = self.AppID_2
+            self.AppSecret = self.AppSecret_2
 
     def get_access_token(self):
         url = 'https://api.weixin.qq.com/sns/oauth2/access_token'

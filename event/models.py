@@ -158,6 +158,9 @@ class ApplyUser(models.Model):
 
     def get_apply_types(self):
         return ','.join([i.apply_type.type.type for i in self.applyusertypes_set.all()])
+    
+    def get_apply_types_list(self):
+        return [i.apply_type.type.type for i in self.applyusertypes_set.all()]
 
     def get_apply_status(self):
         if self.is_check == 0:

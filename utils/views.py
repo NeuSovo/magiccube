@@ -262,13 +262,16 @@ def resend_reg_email_view(request):
 
 def wx_login_view(request):
     code = request.GET.get('code') or request.POST.get('code')
-    we = WeChatSdk(code=code)
+    is_mp = 'MicroMessenger' in request.META['HTTP_USER_AGENT']
+    we = WeChatSdk(code=code, is_mp=is_mp)
     we_user_token = we.get_access_token()
+    print (we_user_token)
     if 'errcode' in we_user_token:
         return parse_info(we_user_token)
     user_info = we.get_user_info(access_token=we_user_token['access_token'], openid=we_user_token['openid'])
-    if WeChatUser.objects.filter(openid=we_user_token['openid']).exists():
-        we_user = WeChatUser.objects.get(openid=user_info['openid'])
+    print (user_info)
+    if WeChatUser.objects.filter(unionid=user_info['unionid']).exists():
+        we_user = WeChatUser.objects.get(unionid=user_info['unionid'])
         we_user.update_profile(access_token=we_user_token['access_token'], refresh_token=we_user_token['refresh_token'], **user_info)
         resp = {}
         access_token = gen_jwt(

@@ -87,10 +87,12 @@ class ApplyUserAdmin(admin.ModelAdmin):
             writer = csv.writer(response)
             if header:
                 writer.writerow(header)
-
+			
+            # field_names.pop(-1)
             for obj in queryset:
                 row = [getattr(obj, field)() if callable(getattr(obj, field)) else getattr(obj, field) for field in
                        field_names]
+                row += getattr(obj, 'get_apply_types_list')()
                 writer.writerow(row)
 
             return response
@@ -112,11 +114,12 @@ class ApplyUserAdmin(admin.ModelAdmin):
     # SaveExecl.short_description = "导出excel"
     actions = [export_as_csv_action("导出excel",
                                     fields=['create_time','get_apply_user_id', 'get_apply_user','get_apply_username','get_apply_userphone', 'get_event_name', 'total_price', 'remarks',
-                                            'get_apply_types', 'get_apply_status'],
-                                    header=['报名时间','报名者id', '报名者邮箱', '报名者姓名', '报名者电话', '报名赛事', '总价', '留言', '报名赛事类型', '是否缴费'])]
+                                            'get_apply_status'],
+                                    header=['报名时间','报名者id', '报名者邮箱', '报名者姓名', '报名者电话', '报名赛事', '总价', '留言', '是否缴费', '报名赛事类型'])]
 
     list_display = ('create_time', 'get_apply_user', 'get_event_name', 'total_price', 'checked_status', 'is_check',)
     list_editable = ('is_check',)
+    raw_id_fields = ('apply_user',)
     list_filter = ('is_check', ApplyEventsFilter)
     readonly_fields = ('apply_id',)
 

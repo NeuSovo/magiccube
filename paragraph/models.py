@@ -39,7 +39,7 @@ class RzgParagraph(models.Model):
     country = models.CharField(max_length=50, verbose_name="地区")
     name = models.CharField(max_length=50, verbose_name="姓名")
     sex = models.CharField(max_length=50, verbose_name="性别")
-    phone = models.BigIntegerField(verbose_name="电话")
+    phone = models.BigIntegerField(verbose_name="认证编号")
     wechat = models.CharField(max_length=100, verbose_name='微信')
     zs_img = models.ImageField(verbose_name='证书', default='none', upload_to="img")
 

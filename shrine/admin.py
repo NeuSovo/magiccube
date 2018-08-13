@@ -3,6 +3,7 @@ from .models import Authority
 @admin.register(Authority)
 class AuthorityAdmin(admin.ModelAdmin):
     list_display = ['username', 'events_', 'event_type', 'turn', 'single', 'recent']
+    raw_id_fields = ('username',)
 
     def user_(self, obj):
         return obj.username.username

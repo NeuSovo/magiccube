@@ -21,10 +21,10 @@ class UserRecodeX(serializers.ModelSerializer):
 class ContestRecodeX(serializers.ModelSerializer):
     class Meta:
         model = Events
-        fields = ['event_date', 'name', 'location', 'country', 'eventProvince', 'evnet_weight']
+        fields = ['event_date', 'name', 'location', 'country', 'eventProvince', 'evnet_weight', "id"]
 
 
 class RankRecodeX(serializers.ModelSerializer):
     class Meta:
         model = Authority
-        fields = ['username_str', 'events_str', 'eventType_str', 'single', 'turn', 'recent', 'award']
+        fields = ['username_str', 'events_str', 'eventType_str', 'single', 'turn', 'recent', 'award','events','id']
