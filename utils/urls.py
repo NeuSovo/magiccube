@@ -9,6 +9,8 @@ urlpatterns = [
     path('auth/resendemail', resend_reg_email_view),
 
     path('auth/wxlogin', wx_login_view),
+    path('auth/wxbind', BindWxView.as_view()),
+    path('auth/embind', BindEmailView.as_view()),
 
     path('user/profile', UserProfileView.as_view()),
     path('user/profile/<str:user_id>', get_user_profile_view),

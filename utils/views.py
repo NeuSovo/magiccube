@@ -244,7 +244,7 @@ def get_user_profile_view(request, user_id):
     res['profile'] = serializer(user.userprofile, exclude_attr=('user', 'phone', 'paperwork_type', 'paperwork_id'), datetime_format='string')
     res['picture'] = serializer(user.userpicture_set.all(), exclude_attr=('user'))
     res['apply_event'] = serializer(user.applyuser_set.all(), exclude_attr=('apply_user'), datetime_format='string')
-    res['record'] = serializer(user.userprofile.authority_set.all(), exclude_attr=('username','username_id','events_id','eventType_id',), datetime_format='string')
+    res['record'] = serializer(user.authority_set.all(), exclude_attr=('username','username_id','events_id','eventType_id',), datetime_format='string')
 
     return parse_info(res)
 
@@ -294,4 +294,62 @@ def wx_login_view(request):
     resp['expires_in'] = 3600 * 24 * 7
     
     return parse_info(resp)
+  
+  
+class BindWxView(JsonResponseMixin, View, CheckToken):
 
+    def get(self, request, *args, **kwargs):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+        code = request.GET.get('code')
+        is_mp = 'MicroMessenger' in request.META['HTTP_USER_AGENT']
+        we = WeChatSdk(code=code, is_mp=is_mp)
+        we_user_token = we.get_access_token()
+
+        if 'errcode' in we_user_token:
+            return self.render_to_response(we_user_token)
+        user_info = we.get_user_info(access_token=we_user_token['access_token'], openid=we_user_token['openid'])
+        if WeChatUser.objects.filter(unionid=user_info['unionid']).exists():
+            return self.render_to_response({'msg': '该微信号已绑定其他账号'})
+
+        we_user = WeChatUser(user=self.user)
+        we_user.update_profile(access_token=we_user_token['access_token'], refresh_token=we_user_token['refresh_token'], **user_info)
+
+        return self.render_to_response({'msg' : 'ok'})
+
+
+class BindEmailView(JsonResponseMixin, View, CheckToken):
+
+    def get(self, request, *args, **kwargs):
+        token = request.GET.get('token')
+        try:
+            user_info = de_jwt(token)
+            user = User.get_user_by_id(user_info['user_id'])
+        except Exception as e:
+            return parse_info({'msg': '连接可能失效或者过期 {}'.format(str(e))})
+
+        user.is_email_check = 2
+        user.email = user_info.get('user_email')
+        user.save()
+        return HttpResponseRedirect(FRONTEND_URL)
+
+
+    @handle_post_body_to_json
+    def post(self, request, body, *args, **kwargs):
+        if not self.wrap_check_token_result():
+            return self.render_to_response({'msg': self.message})
+
+        email = body.get('email')
+        try:
+            validate_email(email)
+        except Exception as e:
+            return self.render_to_response({'msg': '邮箱格式不符'})
+
+        is_exist_user = User.get_user_by_email(email)
+        if is_exist_user:
+            # [TODO] 重发邮件
+            return self.render_to_response({'msg': '邮箱已被其他用户绑定', 'email_status': is_exist_user.is_email_check})
+
+        bind_email_address.delay(uid=self.user.id, email=email)
+
+        return self.render_to_response({'msg': "已向邮箱 {} 发送一封确认邮件".format(email)})

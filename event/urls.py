@@ -11,4 +11,5 @@ urlpatterns = [
     path('type/<str:event_id>', get_event_type_view),
     path('applyuser/<str:event_id>', get_event_apply_user_view),
     path('apply/', ApplyUserView.as_view()),
+    path('score/<int:event_id>', get_event_score_view)
 ]

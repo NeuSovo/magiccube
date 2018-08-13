@@ -43,7 +43,7 @@ class RankRecode(viewsets.ReadOnlyModelViewSet):
         return queryset
 
     def authority(self, area):
-        type = EventType.objects.all()
+        type = EventTypeDetail.objects.all()
         list = []
         print (type)
         for i in type:

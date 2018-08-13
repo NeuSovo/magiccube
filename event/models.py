@@ -181,11 +181,12 @@ class ApplyUser(models.Model):
     checked_status.short_description = u"付费状态"
     get_apply_user.short_description = u'报名者邮箱'
     get_event_name.short_description = u'赛事名称'
+    get_apply_user_id.short_description = u'报名者id'
 
     apply_id = models.UUIDField(primary_key=True, verbose_name='报名id')
     event = models.ForeignKey(Events, on_delete=models.SET(-1), verbose_name='报名赛事')
     apply_user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='报名用户')
-    create_time = models.DateField(default=timezone.now)
+    create_time = models.DateField(default=timezone.now, verbose_name='报名时间')
     total_price = models.IntegerField(null=True, verbose_name='总价(自动加上赛事基础报名费)')
     remarks = models.CharField(max_length=155, null=True, blank=True, verbose_name='留言')
     is_check = models.IntegerField(default=0, choices=[[0, '未缴费'], [1, '已缴费']], verbose_name='是否缴费')

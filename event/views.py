@@ -161,3 +161,34 @@ def get_event_apply_user_view(request, event_id):
         })
     res['list'] = apply_list
     return parse_info(res, safe=True)
+  
+
+def get_event_score_view(request, event_id):
+    res = []
+    try:
+        event = Events.objects.get(id=event_id)
+        queryset = event.authority_set.all().order_by('single')
+    except Exception as e:
+        raise Http404("event_id：{} 错误".format(event_id))
+        
+    type = request.GET.get('type')
+    kwargs = {}
+    if type:
+        kwargs['eventType_id'] = type
+
+    queryset = queryset.filter(**kwargs)
+
+    for i in queryset:
+        res.append({
+            'user_info': serializer(i.username, exclude_attr=('password', 'is_email_check', 'reg_date')),
+            'event_info': serializer(i.events, datetime_format='string') ,
+            'score': {
+                'eventType': i.eventType.type,
+                'single' : i.single,
+                'turn': i.turn,
+                'recent': i.recent,
+                'award': i.award
+            }
+        })
+
+    return parse_info(res, safe=False)

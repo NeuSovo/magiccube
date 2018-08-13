@@ -7,7 +7,7 @@ from celery.decorators import task
 from django.http import JsonResponse
 from django.db.models import Func, Value
 from django.core.mail import EmailMessage
-from .apps import email_check_template, email_forget_template
+from .apps import email_check_template, email_forget_template, email_bind_template
 from .models import User
 
 send_email_pool = redis.StrictRedis(host='127.0.0.1', port=6379, db=1)
@@ -39,8 +39,25 @@ def forget_password_email(self, email, fail_silently=False):
         return 
     uid = uid.id
     to_list = [email]
-    token = FRONTEND_URL +"?token=" + gen_jwt(uid, email, 'resetpassword', 0.17)
+    token = FRONTEND_URL +"?token=" + gen_jwt(uid, email, 'resetpassword', 0.5)
     html_content = email_forget_template.format(email=email, token=token)
+    try:
+        if not send_email_pool.exists('sendemail:{}'.format(email)):
+            msg = EmailMessage(subject, html_content, None, to_list)
+            msg.content_subtype = "html"
+            msg.send(fail_silently)
+            send_email_pool.set('sendemail:{}'.format(email), 1, ex=180)
+    except Exception as e:
+        raise self.retry(exc=e)
+    return email
+
+
+@task(bind=True, max_retries=3, default_retry_delay=10)
+def bind_email_address(self, uid, email, fail_silently=False):
+    subject = '【SSZ国际魔方联赛】绑定邮箱'
+    to_list = [email]
+    token = BACKEND_URL +"auth/embind?token=" + gen_jwt(uid, email, 'bindemail', 0.5)
+    html_content = email_bind_template.format(email=email, token=token)
     try:
         if not send_email_pool.exists('sendemail:{}'.format(email)):
             msg = EmailMessage(subject, html_content, None, to_list)

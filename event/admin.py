@@ -117,7 +117,7 @@ class ApplyUserAdmin(admin.ModelAdmin):
                                             'get_apply_status'],
                                     header=['报名时间','报名者id', '报名者邮箱', '报名者姓名', '报名者电话', '报名赛事', '总价', '留言', '是否缴费', '报名赛事类型'])]
 
-    list_display = ('create_time', 'get_apply_user', 'get_event_name', 'total_price', 'checked_status', 'is_check',)
+    list_display = ('create_time','get_apply_user_id', 'get_apply_user', 'get_event_name', 'total_price', 'checked_status', 'is_check',)
     list_editable = ('is_check',)
     raw_id_fields = ('apply_user',)
     list_filter = ('is_check', ApplyEventsFilter)
@@ -129,7 +129,7 @@ class ApplyUserAdmin(admin.ModelAdmin):
 
 
 # admin.site.register(UserHistory)
-admin.site.register(EventType)
+admin.site.register(EventTypeDetail)
 admin.site.register(EventProvince)
 
 admin.site.site_header = '项目管理中心'

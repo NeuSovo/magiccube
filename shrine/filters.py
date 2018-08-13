@@ -17,7 +17,7 @@ class UserFilter(Set):
 
 
 class ContestFilter(Set):
-    eventType = django_filters.CharFilter(name="eventtypedetail__type__type")
+    eventType = django_filters.CharFilter(name="type__type")
     name = django_filters.CharFilter(name='name', lookup_expr='icontains')
     location = django_filters.CharFilter(name='location', lookup_expr='icontains')
 
@@ -30,9 +30,9 @@ class RankFilter(Set):
     area = django_filters.CharFilter(name='events__country')
     # username = django_filters.CharFilter(name='username__username')
     # events = django_filters.CharFilter(name='events__name')
-    eventType = django_filters.CharFilter(name='eventType__type')
+    eventType = django_filters.CharFilter(name='eventType__type__type')
     sex = django_filters.CharFilter(name='username__sex')
 
     class Meta:
         model = Authority
-        fields = ['area', 'eventType', 'sex']
+        fields = ['area', 'sex', 'eventType']
